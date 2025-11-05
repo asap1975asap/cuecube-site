@@ -123,6 +123,12 @@ function requireLogin(req, res, next) {
   next();
 }
 
+function getUnitPriceByQty(product, qty) {
+  if (qty >= 100) return product.price100;
+  if (qty >= 50) return product.price50;
+  return product.price10;
+}
+
 /* ---------- routes ---------- */
 
 // home
@@ -168,9 +174,7 @@ app.get("/products/:id", requireLogin, (req, res) => {
   }
 
   const defaultQty = 10;
-  let unitPrice = product.price10;
-  if (defaultQty >= 100) unitPrice = product.price100;
-  else if (defaultQty >= 50) unitPrice = product.price50;
+  const unitPrice = getUnitPriceByQty(product, defaultQty);
   const total = +(unitPrice * defaultQty).toFixed(2);
 
   res.render("product-detail", {
@@ -182,14 +186,28 @@ app.get("/products/:id", requireLogin, (req, res) => {
   });
 });
 
-// order page (simple demo)
+// order page (GET from product-detail)
 app.get("/order", requireLogin, (req, res) => {
+  const products = getProducts();
+
+  const productId = Number(req.query.productId);
+  let qty = Number(req.query.qty) || 10;
+  if (qty < 10) qty = 10;
+
+  const product = products.find((p) => p.id === productId);
+  if (!product) {
+    return res.status(404).send("Product not found");
+  }
+
+  const unitPrice = getUnitPriceByQty(product, qty);
+  const total = +(unitPrice * qty).toFixed(2);
+
   res.render("order", {
     user: req.session.user,
-    product: null,
-    qty: 0,
-    unitPrice: 0,
-    total: 0,
+    product,
+    qty,
+    unitPrice,
+    total,
   });
 });
 
