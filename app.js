@@ -1,5 +1,5 @@
 // app.js
-// Main server file for CueCube Wholesale website
+// CueCube Wholesale demo site (for Render)
 
 const express = require("express");
 const session = require("express-session");
@@ -8,13 +8,13 @@ const path = require("path");
 
 const app = express();
 
-// --- Basic setup ---
+// view + static
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// --- Session configuration ---
+// sessions
 app.use(
   session({
     secret: "cuecube_secret_key",
@@ -23,152 +23,208 @@ app.use(
   })
 );
 
-// --- Demo users ---
+// demo users
 const users = [
-  { username: "demo", password: "123Qwerty123" },
-  { username: "admin", password: "admin123" },
+  { username: "demo@cuecube.com", password: "123Qwerty123" },
 ];
 
-// --- Middleware to inject user info into templates ---
-app.use((req, res, next) => {
-  res.locals.user = req.session.user;
+// helper to protect routes
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
   next();
-});
+}
 
-// --- Routes ---
-
-// Home page
+// home
 app.get("/", (req, res) => {
-  res.render("home");
+  res.render("home", { user: req.session.user });
 });
 
-// Login page
+// login (GET)
 app.get("/login", (req, res) => {
-  res.render("login");
+  // IMPORTANT: pass error even if null, otherwise EJS can fail
+  res.render("login", { error: null });
 });
 
+// login (POST)
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(
+  const found = users.find(
     (u) => u.username === username && u.password === password
   );
-  if (user) {
-    req.session.user = user;
-    res.redirect("/products");
-  } else {
-    res.send("Invalid username or password.");
+
+  if (!found) {
+    // re-render with error message
+    return res.render("login", { error: "Invalid email or password" });
   }
+
+  req.session.user = { username: found.username };
+  res.redirect("/products");
 });
 
-// Logout
+// logout
 app.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
 });
 
-// Products page
-app.get("/products", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-
+// products list
+app.get("/products", requireLogin, (req, res) => {
   const products = [
     {
       id: 1,
-      name: "CueCube Grey",
-      price: 15,
+      name: "CueCube - Grey",
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
       images: [
         "/images/cue-cube-grey-1.jpg",
         "/images/cue-cube-grey-2.jpg",
         "/images/cue-cube-grey-3.jpg",
       ],
-      type: "cube",
+      desc: "Original CueCube tip shaper and scuffer.",
     },
     {
       id: 2,
-      name: "CueCube Keychain",
-      price: 15,
+      name: "CueCube - Blue",
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
+      images: [
+        "/images/cue-cube-grey-1.jpg",
+        "/images/cue-cube-grey-2.jpg",
+        "/images/cue-cube-grey-3.jpg",
+      ],
+      desc: "Same tool in blue finish.",
+    },
+    {
+      id: 3,
+      name: "CueCube Keychain - Grey",
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
       images: [
         "/images/cue-cube-keychain-1.jpg",
         "/images/cue-cube-keychain-2.jpg",
         "/images/cue-cube-keychain-3.jpg",
       ],
-      type: "keychain",
+      desc: "CueCube with keychain ring for players on the go.",
     },
   ];
 
-  res.render("products", { products });
+  res.render("products", { user: req.session.user, products });
 });
 
-// Product detail page
-app.get("/product/:id", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-
-  const productId = parseInt(req.params.id);
+// product detail
+app.get("/products/:id", requireLogin, (req, res) => {
   const products = [
     {
       id: 1,
-      name: "CueCube Grey",
-      price: 15,
-      description: `
-        The original CueCube is skillfully crafted in the USA using solid metal and silicon carbide for durability.
-        Provides precise cue tip shaping and scuffing for ultimate ball control.
-        Nickel (.418") radius on shaper side and scuffer side to hold chalk better.
-      `,
-      specifications: `
-        Material: solid metal with silicone carbide to last a long time
-        Color: Silver
-        Profile: Nickel (.418")
-        Size: 1" x 1" x 0.6" (2.6 x 2.6 x 1.5 cm)
-        Net weight: 1.4 oz. (40 gr)
-      `,
+      name: "CueCube - Grey",
+      brand: "CueCube",
+      minQty: 10,
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
       images: [
         "/images/cue-cube-grey-1.jpg",
         "/images/cue-cube-grey-2.jpg",
         "/images/cue-cube-grey-3.jpg",
       ],
+      longDesc: `Product features:
+
+The original Cue Cube is skillfully crafted in the USA using solid metal and silicon carbide for durability.
+It provides a precise cue tip shaping and scuffing to give players ultimate ball control.
+Unique design provides automatic nickel (.418") radius on shaper side.
+Scuffer side lightly fluffs up the tip to better hold chalk and prevent miscues.
+
+Product specifications:
+Material: solid metal with silicone carbide to last a long time
+Color: Silver
+Profile: Nickel (.418")
+Size: 1" x 1" x 0.6" (2.6 x 2.6 x 1.5 cm)
+Net weight: 1.4 oz. (40 gr)`,
     },
     {
       id: 2,
-      name: "CueCube Keychain",
-      price: 15,
-      description: `
-        The original CueCube Keychain edition – crafted in the USA using solid metal and silicon carbide for durability.
-        Combines cue tip shaper and scuffer with convenient keychain.
-      `,
-      specifications: `
-        Material: solid metal with silicone carbide to last a long time
-        Color: Silver
-        Profile: Nickel (.418")
-        Size: 1" x 1" x 0.6" (2.6 x 2.6 x 1.5 cm)
-        Net weight: 1.6 oz. (46 gr)
-      `,
+      name: "CueCube - Blue",
+      brand: "CueCube",
+      minQty: 10,
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
+      images: [
+        "/images/cue-cube-grey-1.jpg",
+        "/images/cue-cube-grey-2.jpg",
+        "/images/cue-cube-grey-3.jpg",
+      ],
+      longDesc: `Same CueCube tool in blue finish.`,
+    },
+    {
+      id: 3,
+      name: "CueCube Keychain - Grey",
+      brand: "CueCube",
+      minQty: 10,
+      price10: 15.0,
+      price50: 12.75,
+      price100: 10.84,
       images: [
         "/images/cue-cube-keychain-1.jpg",
         "/images/cue-cube-keychain-2.jpg",
         "/images/cue-cube-keychain-3.jpg",
       ],
+      longDesc: `Product features:
+
+The original Cue Cube Keychain is skillfully crafted in the USA using solid metal and silicon carbide for durability.
+It provides a precise cue tip shaping and scuffing to give players ultimate ball control.
+Includes keychain ring for easy carry.
+
+Product specifications:
+Material: solid metal with silicone carbide
+Color: Silver
+Profile: Nickel (.418")
+Size: 1" x 1" x 0.6" (2.6 x 2.6 x 1.5 cm)
+Net weight: 1.6 oz. (46 gr)`,
     },
   ];
 
-  const product = products.find((p) => p.id === productId);
+  const id = Number(req.params.id);
+  const product = products.find((p) => p.id === id);
   if (!product) return res.status(404).send("Product not found");
-  res.render("product-detail", { product });
+
+  // default calc on page
+  const defaultQty = 10;
+  const unitPrice =
+    defaultQty >= 100
+      ? product.price100
+      : defaultQty >= 50
+      ? product.price50
+      : product.price10;
+  const total = (unitPrice * defaultQty).toFixed(2);
+
+  res.render("product-detail", {
+    user: req.session.user,
+    product,
+    defaultQty,
+    unitPrice,
+    total,
+  });
 });
 
-// Order page
-app.get("/order", (req, res) => {
-  if (!req.session.user) return res.redirect("/login");
-  res.render("order");
+// order page
+app.get("/order", requireLogin, (req, res) => {
+  res.render("order", {
+    user: req.session.user,
+    product: null,
+    qty: 0,
+    unitPrice: 0,
+    total: 0,
+  });
 });
 
-app.post("/order", (req, res) => {
-  const { name, address, phone } = req.body;
-  res.send(
-    `Thank you ${name}! Your order will be shipped to ${address}. We’ll contact you at ${phone}.`
-  );
-});
-
-// --- Start server ---
+// start server (Render uses process.env.PORT)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`CueCube wholesale site running at http://localhost:${PORT}`);
