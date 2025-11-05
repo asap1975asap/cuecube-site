@@ -1,13 +1,11 @@
-<%- include('layout', { user: user, body: `
+<%- include('layout', { user: user, body: '' }) %>
 <div class="home-container">
   <img src="/images/main-logo.jpg" alt="CueCube logo" class="main-logo">
   <h1>Welcome to CueCube Wholesale</h1>
   <p>Official wholesale platform for CueCube — the original cue tip shaper and scuffer made in the USA.</p>
-
   <% if (user) { %>
     <a class="btn" href="/products">View Products</a>
   <% } else { %>
     <a class="btn" href="/login">Login to View Products</a>
   <% } %>
 </div>
-` }) %>
