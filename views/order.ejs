@@ -1,24 +1,31 @@
-<%- include('layout', { user: user, body: `
-  <div class="order-page">
-    <h1>Place your order</h1>
-    <p>You are ordering: <strong>${product.name}</strong></p>
-    <p>Quantity: <strong>${qty}</strong></p>
-    <p>Unit price: <strong>$${unitPrice.toFixed(2)}</strong></p>
-    <p>Total amount: <strong>$${total.toFixed(2)}</strong></p>
+<%- include('layout', { user: user, body: '' }) %>
 
-    <form class="form-card" method="post" action="#">
-      <label>Full name</label>
-      <input type="text" name="fullName" placeholder="Your name" required />
+<div class="order-container">
+  <h2>Place order</h2>
 
-      <label>Phone number</label>
-      <input type="text" name="phone" placeholder="+1 555 123 4567" required />
+  <% if (product) { %>
+    <p><strong>Product:</strong> <%= product.name %></p>
+    <p><strong>Quantity:</strong> <%= qty %> pcs</p>
+    <p><strong>Unit price:</strong> $<%= unitPrice.toFixed(2) %></p>
+    <p><strong>Total:</strong> $<%= total %></p>
+  <% } else { %>
+    <p>No product selected. You can still submit your contact info.</p>
+  <% } %>
 
-      <label>Shipping address</label>
-      <textarea name="address" rows="3" placeholder="Street, city, state, ZIP" required></textarea>
+  <form method="post" action="/order" class="order-form">
+    <input type="hidden" name="productName" value="<%= product ? product.name : '' %>">
+    <input type="hidden" name="qty" value="<%= qty || 0 %>">
+    <input type="hidden" name="total" value="<%= total || 0 %>">
 
-      <p class="small">* This is a demo form. Submission logic is not wired to a real backend.</p>
+    <label>Your name</label>
+    <input type="text" name="name" required>
 
-      <button type="submit" class="btn">Submit order</button>
-    </form>
-  </div>
-` }) %>
+    <label>Phone</label>
+    <input type="text" name="phone" required>
+
+    <label>Shipping address</label>
+    <textarea name="address" rows="3" required></textarea>
+
+    <button type="submit">Submit order</button>
+  </form>
+</div>
