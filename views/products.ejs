@@ -1,0 +1,29 @@
+<%- include('layout', { user: user, body: `
+  <h2>CueCube Product Catalog</h2>
+  <p class="small">Click a product name to view full details.</p>
+  <div class="products-grid">
+    ${products.map((p) => `
+      <div class="product-card" data-product="${p.id}">
+        <div class="product-gallery">
+          <img src="${p.images[0]}" class="product-image-main" alt="${p.name}" />
+          <div class="product-thumbs">
+            ${p.images.map((img, tIdx) => `
+              <img
+                src="${img}"
+                class="product-thumb ${tIdx === 0 ? 'active' : ''}"
+                data-full="${img}"
+                alt="${p.name}"
+              />
+            `).join('')}
+          </div>
+        </div>
+        <div class="product-info">
+          <h3><a href="/products/${p.id}">${p.name}</a></h3>
+          <p class="brand">by ${p.brand}</p>
+          <div class="price">Price from $${p.price100}</div>
+          <p>${p.shortDesc}</p>
+        </div>
+      </div>
+    `).join('')}
+  </div>
+` }) %>

@@ -1,0 +1,277 @@
+/* === Base styles === */
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6f8;
+  color: #1a1a1a;
+}
+
+a {
+  color: #0077cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  color: #111;
+  margin-bottom: 10px;
+}
+
+/* === Layout === */
+header.topbar {
+  background: #0f172a;
+  color: #fff;
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header.topbar .logo {
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+header.topbar nav a {
+  color: #fff;
+  margin-left: 20px;
+  font-size: 15px;
+}
+
+header.topbar nav a:hover {
+  text-decoration: underline;
+}
+
+footer.footer {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #666;
+  background: #e2e8f0;
+  margin-top: 40px;
+}
+
+/* === Home page === */
+.home-container {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.home-container h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.home-container p {
+  font-size: 18px;
+  color: #333;
+}
+
+/* === Buttons === */
+.btn {
+  background: #0077cc;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 15px;
+}
+
+.btn:hover {
+  background: #005fa3;
+}
+
+/* === Products grid === */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 30px 40px;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.product-card h3 {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.product-card .brand {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.product-card .price {
+  font-weight: 600;
+  color: #0077cc;
+  margin-bottom: 6px;
+}
+
+.product-image-main {
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.product-thumbs {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.product-thumb {
+  width: 45px;
+  height: 45px;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.product-thumb.active {
+  border-color: #0077cc;
+}
+
+/* === Product detail === */
+.product-detail {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  padding: 40px 50px;
+}
+
+.product-gallery {
+  flex: 1;
+  max-width: 450px;
+}
+
+.product-side {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.brand-line {
+  margin-bottom: 15px;
+  color: #444;
+}
+
+.price-panel,
+.qty-panel {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 15px;
+}
+
+.calc-line {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+#orderQty {
+  width: 100px;
+  padding: 6px;
+  font-size: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  margin: 5px 0;
+}
+
+.order-form {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px;
+  margin-top: 25px;
+  margin-bottom: 8px;
+}
+
+.long-text {
+  white-space: pre-wrap;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #222;
+}
+
+/* === Order page === */
+.order-page {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.order-page h1 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.form-card input,
+.form-card textarea {
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  width: 100%;
+}
+
+.form-card label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.form-card textarea {
+  resize: vertical;
+}
+
+.small {
+  font-size: 13px;
+  color: #777;
+  margin-top: 5px;
+}

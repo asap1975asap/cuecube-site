@@ -1,0 +1,44 @@
+<%- include('layout', { user: user, body: `
+  <div class="product-detail" data-product="${product.id}" data-price10="${product.price10}" data-price50="${product.price50}" data-price100="${product.price100}">
+    <div class="product-gallery">
+      <img src="${product.images[0]}" class="product-image-main" alt="${product.name}" />
+      <div class="product-thumbs">
+        ${product.images.map((img, idx) => `
+          <img
+            src="${img}"
+            class="product-thumb ${idx === 0 ? 'active' : ''}"
+            data-full="${img}"
+            alt="${product.name}"
+          />
+        `).join('')}
+      </div>
+    </div>
+    <div class="product-side">
+      <h1 class="product-title">${product.name}</h1>
+      <p class="brand-line">by <strong>${product.brand}</strong></p>
+
+      <div class="price-panel">
+        <p><strong>Wholesale pricing:</strong></p>
+        <p>10+ pcs: <strong>$${product.price10}</strong> per unit</p>
+        <p>50+ pcs: <strong>$${product.price50}</strong> per unit</p>
+        <p>100+ pcs: <strong>$${product.price100}</strong> per unit</p>
+      </div>
+
+      <div class="qty-panel">
+        <label for="orderQty"><strong>Quantity (min 10 pcs):</strong></label>
+        <input id="orderQty" type="number" min="${product.minQty}" value="${defaultQty}" step="1" />
+        <p class="calc-line">Unit price: <span id="unitPrice">$${unitPrice.toFixed(2)}</span></p>
+        <p class="calc-line">Total: <span id="totalPrice">$${total.toFixed(2)}</span></p>
+      </div>
+
+      <form action="/order" method="get" class="order-form">
+        <input type="hidden" name="productId" value="${product.id}" />
+        <input type="hidden" name="qty" id="orderQtyHidden" value="${defaultQty}" />
+        <button type="submit" class="btn">Place order</button>
+      </form>
+
+      <h3 class="section-title">Product details</h3>
+      <pre class="long-text">${product.longDesc}</pre>
+    </div>
+  </div>
+` }) %>

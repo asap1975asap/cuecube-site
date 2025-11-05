@@ -1,0 +1,24 @@
+<%- include('layout', { user: user, body: `
+  <div class="order-page">
+    <h1>Place your order</h1>
+    <p>You are ordering: <strong>${product.name}</strong></p>
+    <p>Quantity: <strong>${qty}</strong></p>
+    <p>Unit price: <strong>$${unitPrice.toFixed(2)}</strong></p>
+    <p>Total amount: <strong>$${total.toFixed(2)}</strong></p>
+
+    <form class="form-card" method="post" action="#">
+      <label>Full name</label>
+      <input type="text" name="fullName" placeholder="Your name" required />
+
+      <label>Phone number</label>
+      <input type="text" name="phone" placeholder="+1 555 123 4567" required />
+
+      <label>Shipping address</label>
+      <textarea name="address" rows="3" placeholder="Street, city, state, ZIP" required></textarea>
+
+      <p class="small">* This is a demo form. Submission logic is not wired to a real backend.</p>
+
+      <button type="submit" class="btn">Submit order</button>
+    </form>
+  </div>
+` }) %>
