@@ -1,44 +1,46 @@
-<%- include('layout', { user: user, body: `
-  <div class="product-detail" data-product="${product.id}" data-price10="${product.price10}" data-price50="${product.price50}" data-price100="${product.price100}">
-    <div class="product-gallery">
-      <img src="${product.images[0]}" class="product-image-main" alt="${product.name}" />
-      <div class="product-thumbs">
-        ${product.images.map((img, idx) => `
-          <img
-            src="${img}"
-            class="product-thumb ${idx === 0 ? 'active' : ''}"
-            data-full="${img}"
-            alt="${product.name}"
-          />
-        `).join('')}
-      </div>
-    </div>
-    <div class="product-side">
-      <h1 class="product-title">${product.name}</h1>
-      <p class="brand-line">by <strong>${product.brand}</strong></p>
+<%- include('layout', { user: user, body: '' }) %>
 
-      <div class="price-panel">
-        <p><strong>Wholesale pricing:</strong></p>
-        <p>10+ pcs: <strong>$${product.price10}</strong> per unit</p>
-        <p>50+ pcs: <strong>$${product.price50}</strong> per unit</p>
-        <p>100+ pcs: <strong>$${product.price100}</strong> per unit</p>
-      </div>
-
-      <div class="qty-panel">
-        <label for="orderQty"><strong>Quantity (min 10 pcs):</strong></label>
-        <input id="orderQty" type="number" min="${product.minQty}" value="${defaultQty}" step="1" />
-        <p class="calc-line">Unit price: <span id="unitPrice">$${unitPrice.toFixed(2)}</span></p>
-        <p class="calc-line">Total: <span id="totalPrice">$${total.toFixed(2)}</span></p>
-      </div>
-
-      <form action="/order" method="get" class="order-form">
-        <input type="hidden" name="productId" value="${product.id}" />
-        <input type="hidden" name="qty" id="orderQtyHidden" value="${defaultQty}" />
-        <button type="submit" class="btn">Place order</button>
-      </form>
-
-      <h3 class="section-title">Product details</h3>
-      <pre class="long-text">${product.longDesc}</pre>
+<div class="product-detail">
+  <div>
+    <img src="<%= product.images[0] %>" alt="<%= product.name %>" class="main-image" id="mainProductImage">
+    <div class="thumbnail-container" id="thumbs">
+      <% product.images.forEach(function(img, index) { %>
+        <img src="<%= img %>" data-img="<%= img %>" class="<%= index === 0 ? 'active' : '' %>" />
+      <% }) %>
     </div>
   </div>
-` }) %>
+
+  <div class="info">
+    <h2><%= product.name %></h2>
+    <p>by <%= product.brand %></p>
+
+    <h4>Wholesale pricing:</h4>
+    <p>10+ pcs: <strong>$<%= product.price10 %></strong> per unit</p>
+    <p>50+ pcs: <strong>$<%= product.price50 %></strong> per unit</p>
+    <p>100+ pcs: <strong>$<%= product.price100 %></strong> per unit</p>
+
+    <label for="qtyInput"><strong>Quantity (min 10 pcs):</strong></label>
+    <input id="qtyInput" class="quantity-input" type="number" min="10" step="1" value="<%= defaultQty %>">
+
+    <p id="unitPriceText">Unit price: $<%= unitPrice.toFixed(2) %></p>
+    <p id="totalPriceText">Total: $<%= total %></p>
+
+    <a class="order-btn" id="placeOrderBtn" href="/order?productId=<%= product.id %>&qty=<%= defaultQty %>">Place order</a>
+  </div>
+</div>
+
+<div style="max-width: 900px; margin: 40px auto;">
+  <h3>Product details</h3>
+  <pre style="white-space: pre-wrap;"><%= product.longDesc %></pre>
+</div>
+
+<script src="/main.js"></script>
+<script>
+  // pass prices to JS
+  window.cuecubeProduct = {
+    id: <%= product.id %>,
+    price10: <%= product.price10 %>,
+    price50: <%= product.price50 %>,
+    price100: <%= product.price100 %>
+  };
+</script>
