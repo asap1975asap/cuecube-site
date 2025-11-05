@@ -26,11 +26,12 @@ app.use(
 // Demo user
 const users = [{ username: "demo@cuecube.com", password: "123Qwerty123" }];
 
-// Product data
+// pricing
 const PRICE_10 = 15.0;
 const PRICE_50 = +(PRICE_10 * 0.85).toFixed(2);
 const PRICE_100 = +(PRICE_50 * 0.85).toFixed(2);
 
+// long descriptions
 const longDescriptionCube = `Product features:
 
 The original Cue Cube is skillfully crafted in the USA using solid metal and silicon carbide for durability.
@@ -59,14 +60,13 @@ Profile: Nickel (.418")
 Size: 1" x 1" x 0.6" (2.6 x 2.6 x 1.5 cm)
 Net weight: 1.6 oz. (46 gr)`;
 
-// Function to get product list
 function getProducts() {
-  const regularImages = [
+  const regularImgs = [
     "/images/cue-cube-grey-1.jpg",
     "/images/cue-cube-grey-2.jpg",
     "/images/cue-cube-grey-3.jpg",
   ];
-  const keychainImages = [
+  const keychainImgs = [
     "/images/cue-cube-keychain-1.jpg",
     "/images/cue-cube-keychain-2.jpg",
     "/images/cue-cube-keychain-3.jpg",
@@ -78,36 +78,37 @@ function getProducts() {
     brand: "CueCube",
     shortDesc: "Original cue tip shaper and scuffer.",
     longDesc: longDescriptionCube,
-    images: regularImages,
+    images: regularImgs,
     minQty: 10,
     price10: PRICE_10,
     price50: PRICE_50,
     price100: PRICE_100,
   }));
 
-  const keychains = ["Grey", "Blue", "Red", "Green", "Black"].map((color, i) => ({
-    id: i + 5,
-    name: `CueCube Keychain - ${color}`,
-    brand: "CueCube",
-    shortDesc: "CueCube with keychain ring — portable version.",
-    longDesc: longDescriptionKeychain,
-    images: keychainImages,
-    minQty: 10,
-    price10: PRICE_10,
-    price50: PRICE_50,
-    price100: PRICE_100,
-  }));
+  const keychains = ["Grey", "Blue", "Red", "Green", "Black"].map(
+    (color, i) => ({
+      id: i + 5,
+      name: `CueCube Keychain - ${color}`,
+      brand: "CueCube",
+      shortDesc: "CueCube with keychain ring — portable version.",
+      longDesc: longDescriptionKeychain,
+      images: keychainImgs,
+      minQty: 10,
+      price10: PRICE_10,
+      price50: PRICE_50,
+      price100: PRICE_100,
+    })
+  );
 
   return [...regular, ...keychains];
 }
 
-// Middleware
 function requireLogin(req, res, next) {
   if (!req.session.user) return res.redirect("/login");
   next();
 }
 
-// Routes
+// routes
 app.get("/", (req, res) => {
   res.render("home", { user: req.session.user });
 });
@@ -121,7 +122,8 @@ app.post("/login", (req, res) => {
   const found = users.find(
     (u) => u.username === username && u.password === password
   );
-  if (!found) return res.render("login", { error: "Invalid email or password" });
+  if (!found)
+    return res.render("login", { error: "Invalid email or password" });
   req.session.user = { username: found.username };
   res.redirect("/products");
 });
@@ -160,16 +162,16 @@ app.get("/order", requireLogin, (req, res) => {
 
 app.post("/order", requireLogin, (req, res) => {
   const { name, address, phone, qty, productName, total } = req.body;
-  res.send(`
-    <h1>Order Received!</h1>
-    <p>Thank you, ${name}. Your order for <b>${productName}</b> (${qty} pcs) has been submitted.</p>
-    <p>Total: $${total}</p>
-    <p>We'll contact you soon at ${phone}.</p>
-    <a href="/">Return to home</a>
-  `);
+  res.send(
+    `<h1>Order Received!</h1>
+     <p>Thank you, ${name}. Your order for <b>${productName}</b> (${qty} pcs) has been submitted.</p>
+     <p>Total: $${total}</p>
+     <p>We will contact you at ${phone}.</p>
+     <a href="/">Return to home</a>`
+  );
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`CueCube wholesale site running on port ${PORT}`);
+  console.log("CueCube wholesale site running on port " + PORT);
 });
