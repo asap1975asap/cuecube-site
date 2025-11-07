@@ -1,47 +1,51 @@
 <%- include('layout', { user: user, body: '' }) %>
 
-<div class="product-detail">
-  <div>
-    <img src="<%= product.images[0] %>" alt="<%= product.name %>" class="main-image" id="mainProductImage">
-    <div class="thumbnail-container" id="thumbs">
-      <% product.images.forEach(function(img, index) { %>
-        <img src="<%= img %>" data-img="<%= img %>" class="<%= index === 0 ? 'active' : '' %>">
-      <% }) %>
+<div class="content-wrap">
+  <div class="product-detail">
+    <div class="product-detail-left">
+      <img src="<%= product.images[0] %>" alt="<%= product.name %>" class="main-image" id="mainProductImage">
+      <div class="thumbnail-container" id="thumbs">
+        <% product.images.forEach(function(img, index) { %>
+          <img src="<%= img %>" data-img="<%= img %>" class="<%= index === 0 ? 'active' : '' %>">
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="product-detail-right">
+      <h2><%= product.name %></h2>
+      <p class="muted">by <%= product.brand %></p>
+
+      <% if (product.hasProfileChoice) { %>
+        <div class="form-row">
+          <label for="profileSelect"><strong>Tip profile:</strong></label>
+          <select id="profileSelect" class="input">
+            <option value=".418" selected>.418 in (Nickel)</option>
+            <option value=".353">.353 in (Dime)</option>
+          </select>
+        </div>
+      <% } %>
+
+      <h4>Wholesale pricing:</h4>
+      <p>10+ pcs: <strong>$<%= product.price10 %></strong> per unit</p>
+      <p>50+ pcs: <strong>$<%= product.price50 %></strong> per unit</p>
+      <p>100+ pcs: <strong>$<%= product.price100 %></strong> per unit</p>
+
+      <div class="form-row">
+        <label for="qtyInput"><strong>Quantity (min 10 pcs):</strong></label>
+        <input id="qtyInput" type="number" min="10" value="<%= defaultQty %>" class="input small">
+      </div>
+
+      <p id="unitPriceText">Unit price: $<%= unitPrice.toFixed(2) %></p>
+      <p id="totalPriceText">Total: $<%= total %></p>
+
+      <a class="btn primary" id="placeOrderBtn" href="/order?productId=<%= product.id %>&qty=<%= defaultQty %>">Place order</a>
     </div>
   </div>
 
-  <div class="info">
-    <h2><%= product.name %></h2>
-    <p>by <%= product.brand %></p>
-
-    <% if (product.hasProfileChoice) { %>
-      <div style="margin: 18px 0;">
-        <label for="profileSelect"><strong>Tip profile:</strong></label>
-        <select id="profileSelect" class="quantity-input" style="width:auto; margin-left:10px;">
-          <option value=".418" selected>.418 in (Nickel)</option>
-          <option value=".353">.353 in (Dime)</option>
-        </select>
-      </div>
-    <% } %>
-
-    <h4>Wholesale pricing:</h4>
-    <p>10+ pcs: <strong>$<%= product.price10 %></strong> per unit</p>
-    <p>50+ pcs: <strong>$<%= product.price50 %></strong> per unit</p>
-    <p>100+ pcs: <strong>$<%= product.price100 %></strong> per unit</p>
-
-    <label for="qtyInput"><strong>Quantity (min 10 pcs):</strong></label>
-    <input id="qtyInput" class="quantity-input" type="number" min="10" step="1" value="<%= defaultQty %>">
-
-    <p id="unitPriceText">Unit price: $<%= unitPrice.toFixed(2) %></p>
-    <p id="totalPriceText">Total: $<%= total %></p>
-
-    <a class="order-btn" id="placeOrderBtn" href="/order?productId=<%= product.id %>&qty=<%= defaultQty %>">Place order</a>
+  <div class="product-text">
+    <h3>Product details</h3>
+    <pre><%= product.longDesc %></pre>
   </div>
-</div>
-
-<div style="max-width: 900px; margin: 40px auto;">
-  <h3>Product details</h3>
-  <pre style="white-space: pre-wrap;"><%= product.longDesc %></pre>
 </div>
 
 <script src="/main.js"></script>
@@ -66,7 +70,7 @@
       "/images/cue-cube-grey-353-3.jpg"
     ]
   };
-  <% } else if (product.id === 1) { %>
+  <% } else { %>
   window.cuecubeVariants = {
     ".418": [
       "/images/cue-cube-keychain-418-1.jpg",

@@ -2,33 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CueCube Wholesale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="logo">CueCube Wholesale</div>
-    <nav>
-      <a href="/">Home</a>
-      <% if (user) { %>
-        <a href="/products">Products</a>
-        <a href="/logout">Logout</a>
-      <% } else { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      <% } %>
-    </nav>
+    <div class="topbar-inner">
+      <div class="logo-text">CueCube Wholesale</div>
+      <nav class="topnav">
+        <a href="/">Home</a>
+        <% if (user) { %>
+          <a href="/products">Products</a>
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+        <% } %>
+      </nav>
+    </div>
   </header>
 
-  <main class="content">
+  <main class="page-body">
     <%- body %>
   </main>
 
-  <footer class="footer">
-    &copy; <%= new Date().getFullYear() %> CueCube Wholesale
+  <footer class="page-footer">
+    © 2025 CueCube Wholesale
   </footer>
-
-  <script src="/main.js"></script>
 </body>
 </html>
