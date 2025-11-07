@@ -1,29 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Register - CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">CueCube Wholesale</div>
+    <div class="brand"><a href="/">CueCube Wholesale</a></div>
     <nav class="nav">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/login" class="nav-link">Login</a>
+      <a href="/">Home</a>
+      <a href="/products" class="active">Products</a>
+      <a href="/login">Login</a>
     </nav>
   </header>
 
-  <main class="page-shell">
-    <section class="auth">
-      <h1>Register</h1>
-      <p>This is only a stub page.</p>
-    </section>
+  <main class="page">
+    <h1 class="page-title">CueCube Product Catalog</h1>
+    <p>Click a product to view full details.</p>
+
+    <div class="product-grid">
+      <% products.forEach(function(p) { %>
+        <article class="product-card">
+          <img src="<%= p.images[0] %>" alt="<%= p.name %>">
+          <h2><%= p.name %></h2>
+          <p class="by">by <%= p.brand %></p>
+          <p class="price">Price from $<%= p.priceFrom %></p>
+          <a class="btn-primary" href="/products/<%= p.id %>">View</a>
+        </article>
+      <% }) %>
+    </div>
   </main>
 
   <footer class="footer">
-    &copy; 2025 CueCube Wholesale
+    (c) 2025 CueCube Wholesale
   </footer>
 </body>
 </html>

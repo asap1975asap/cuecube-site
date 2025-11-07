@@ -1,16 +1,44 @@
-<%- include('layout', { title: title, body: '' }) %>
-<div class="hero small">
-  <h1>Dealer Login</h1>
-  <% if (error) { %>
-    <p style="color:red;"><%= error %></p>
-  <% } %>
-  <form method="post" action="/login" class="login-form">
-    <label>Email
-      <input type="email" name="email" value="demo@cuecube.com" required>
-    </label>
-    <label>Password
-      <input type="password" name="password" required>
-    </label>
-    <button type="submit" class="btn">Login</button>
-  </form>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><a href="/">CueCube Wholesale</a></div>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/products">Products</a>
+      <a href="/login" class="active">Login</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="panel">
+      <h1>Dealer Login</h1>
+
+      <% if (error && error.length) { %>
+        <p class="error"><%= error %></p>
+      <% } %>
+
+      <form method="post" action="/login" class="form-line">
+        <label>
+          Email
+          <input type="email" name="email" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" required>
+        </label>
+        <button type="submit" class="btn-primary">Login</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    (c) 2025 CueCube Wholesale
+  </footer>
+</body>
+</html>

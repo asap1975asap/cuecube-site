@@ -1,54 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Order form - CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">CueCube Wholesale</div>
+    <div class="brand"><a href="/">CueCube Wholesale</a></div>
     <nav class="nav">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/products" class="nav-link">Products</a>
-      <a href="/logout" class="nav-link">Logout</a>
+      <a href="/">Home</a>
+      <a href="/products">Products</a>
+      <a href="/login">Login</a>
     </nav>
   </header>
 
-  <main class="page-shell">
-    <section class="order-page">
-      <h1>Order: <%= product.name %></h1>
-      <p>Diameter: <strong><%= diameter.label %></strong></p>
-      <p>Quantity: <strong><%= qty %></strong></p>
-      <p>Unit price: $<%= unitPrice.toFixed(2) %></p>
+  <main class="page">
+    <section class="panel">
+      <h1>Order received</h1>
+      <p>Your order for <strong><%= product.name %></strong> (<%= qty %> pcs) was submitted.</p>
       <p>Total: $<%= total.toFixed(2) %></p>
-
-      <form method="POST" action="/order" class="order-form">
-        <input type="hidden" name="productId" value="<%= product.id %>" />
-        <input type="hidden" name="diameter" value="<%= diameter.code %>" />
-        <input type="hidden" name="qty" value="<%= qty %>" />
-
-        <label>Name
-          <input type="text" name="name" required />
-        </label>
-        <label>Company
-          <input type="text" name="company" />
-        </label>
-        <label>Address
-          <input type="text" name="address" required />
-        </label>
-        <label>Phone
-          <input type="text" name="phone" required />
-        </label>
-
-        <button type="submit" class="btn-primary">Submit order</button>
-      </form>
+      <p><a href="/">Return to home</a></p>
     </section>
   </main>
 
   <footer class="footer">
-    &copy; 2025 CueCube Wholesale
+    (c) 2025 CueCube Wholesale
   </footer>
 </body>
 </html>
