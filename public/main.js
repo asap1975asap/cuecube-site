@@ -1,73 +1,58 @@
-// image preview change
-document.addEventListener('click', function (e) {
-  if (e.target.matches('.gallery-thumbs .thumb')) {
-    const src = e.target.getAttribute('data-src');
-    const main = document.getElementById('mainImage');
-    if (main && src) {
-      main.src = src;
+document.addEventListener('DOMContentLoaded', function () {
+  const diameterSelect = document.getElementById('diameterSelect');
+  const diameterInput = document.getElementById('diameterInput');
+  const mainImage = document.getElementById('mainImage');
+  const thumbStrip = document.getElementById('thumbStrip');
+
+  function activateThumb(imgEl) {
+    if (!thumbStrip) return;
+    const allThumbs = thumbStrip.querySelectorAll('.thumb-img');
+    allThumbs.forEach(function (t) {
+      t.classList.remove('is-active');
+    });
+    imgEl.classList.add('is-active');
+    const full = imgEl.getAttribute('data-full');
+    if (full && mainImage) {
+      mainImage.src = full;
     }
-    document.querySelectorAll('.gallery-thumbs .thumb').forEach(t => t.classList.remove('active'));
-    e.target.classList.add('active');
   }
-});
 
-// tip profile change -> reload thumbs and update order link
-document.addEventListener('change', function (e) {
-  if (e.target.id === 'tipSelect') {
-    const productId = e.target.getAttribute('data-product-id');
-    const selected = e.target.value;
-
-    fetch(`/products/${productId}?json=1&tip=${encodeURIComponent(selected)}`)
-      .then(r => r.json())
-      .then(data => {
-        const main = document.getElementById('mainImage');
-        const thumbs = document.getElementById('thumbContainer');
-        if (main && data.images && data.images.length) {
-          main.src = data.images[0];
-        }
-        if (thumbs) {
-          thumbs.innerHTML = '';
-          data.images.forEach((img, idx) => {
-            const im = document.createElement('img');
-            im.src = img;
-            im.dataset.src = img;
-            im.className = 'thumb' + (idx === 0 ? ' active' : '');
-            thumbs.appendChild(im);
-          });
-        }
-        const qtyInput = document.getElementById('qtyInput');
-        const qty = qtyInput ? parseInt(qtyInput.value, 10) : 10;
-        const placeBtn = document.getElementById('placeOrderBtn');
-        if (placeBtn) {
-          placeBtn.href = `/order?productId=${productId}&qty=${qty}&diameter=${encodeURIComponent(selected)}`;
-        }
-      })
-      .catch(() => {});
+  if (thumbStrip) {
+    thumbStrip.addEventListener('click', function (evt) {
+      if (evt.target.classList.contains('thumb-img')) {
+        activateThumb(evt.target);
+      }
+    });
   }
-});
 
-// qty change -> recalc total (we recalc on client, but real price is server-side)
-document.addEventListener('input', function (e) {
-  if (e.target.id === 'qtyInput') {
-    let qty = parseInt(e.target.value, 10);
-    if (isNaN(qty) || qty < 10) qty = 10;
-    e.target.value = qty;
-
-    const unitSpan = document.getElementById('unitPrice');
-    const totalSpan = document.getElementById('totalPrice');
-    const tipSelect = document.getElementById('tipSelect');
-    const placeBtn = document.getElementById('placeOrderBtn');
-
-    // we cannot perfectly recalc tier on client without knowing base price, so we simply update total if unit is shown
-    if (unitSpan && totalSpan) {
-      const unit = parseFloat(unitSpan.textContent);
-      const total = (unit * qty).toFixed(2);
-      totalSpan.textContent = total;
+  function rebuildThumbs(images) {
+    if (!thumbStrip) return;
+    thumbStrip.innerHTML = '';
+    images.forEach(function (src, index) {
+      const img = document.createElement('img');
+      img.src = src;
+      img.setAttribute('data-full', src);
+      img.className = 'thumb-img' + (index === 0 ? ' is-active' : '');
+      thumbStrip.appendChild(img);
+    });
+    if (images.length > 0 && mainImage) {
+      mainImage.src = images[0];
     }
+  }
 
-    if (placeBtn && tipSelect) {
-      const productId = tipSelect.getAttribute('data-product-id');
-      placeBtn.href = `/order?productId=${productId}&qty=${qty}&diameter=${encodeURIComponent(tipSelect.value)}`;
-    }
+  if (diameterSelect) {
+    diameterSelect.addEventListener('change', function () {
+      const selected = diameterSelect.options[diameterSelect.selectedIndex];
+      const imagesAttr = selected.getAttribute('data-images') || '';
+      const images = imagesAttr.split(',').filter(function (x) {
+        return x;
+      });
+
+      if (diameterInput) {
+        diameterInput.value = selected.value;
+      }
+
+      rebuildThumbs(images);
+    });
   }
 });

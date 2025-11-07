@@ -2,40 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Products - CueCube Wholesale</title>
+  <title><%= product.name %> - CueCube Wholesale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">CueCube Wholesale</div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/products">Products</a>
-      <a href="/logout">Logout</a>
+    <nav class="nav">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/products" class="nav-link">Products</a>
+      <a href="/logout" class="nav-link">Logout</a>
     </nav>
   </header>
 
-  <main class="content">
-    <h1>CueCube Product Catalog</h1>
-    <p>Click a product name to view full details.</p>
-
-    <div class="card-grid">
-      <% products.forEach(function(p) { %>
-        <div class="card">
-          <img src="<%= p.diameters[0].images[0] %>" alt="<%= p.name %>" class="card-img" />
-          <h2 class="card-title"><%= p.name %></h2>
-          <p class="card-sub">by <%= p.brand %></p>
-          <p class="card-price">Price from $10.84</p>
-          <p class="card-text"><%= p.shortDesc %></p>
-
-          <a class="btn btn-small" href="/products/<%= p.id %>">View</a>
+  <main class="page-shell">
+    <section class="product-detail">
+      <div class="gallery">
+        <img id="mainImage" src="<%= currentDiameter.images[0] %>" alt="<%= product.name %>" class="main-image" />
+        <div class="thumb-strip" id="thumbStrip">
+          <% currentDiameter.images.forEach(function(img, index) { %>
+            <img src="<%= img %>" data-full="<%= img %>" class="thumb-img<%= index === 0 ? ' is-active' : '' %>" />
+          <% }) %>
         </div>
-      <% }) %>
-    </div>
+      </div>
+
+      <div class="product-info">
+        <h1><%= product.name %></h1>
+        <p class="byline">by <%= product.brand %></p>
+
+        <label for="diameterSelect" class="field-label">Tip profile:</label>
+        <select id="diameterSelect" class="field-control">
+          <% product.diameters.forEach(function(diam) { %>
+            <option value="<%= diam.code %>" data-images="<%= diam.images.join(',') %>" <%= diam.code === currentDiameter.code ? 'selected' : '' %>>
+              <%= diam.label %>
+            </option>
+          <% }) %>
+        </select>
+
+        <div class="price-block">
+          <h2>Wholesale pricing:</h2>
+          <ul>
+            <li>10+ pcs: $15 per unit</li>
+            <li>50+ pcs: $12.75 per unit</li>
+            <li>100+ pcs: $10.84 per unit</li>
+          </ul>
+        </div>
+
+        <form class="order-form" method="GET" action="/order">
+          <input type="hidden" name="productId" value="<%= product.id %>" />
+          <input type="hidden" name="diameter" id="diameterInput" value="<%= currentDiameter.code %>" />
+
+          <label for="qty" class="field-label">Quantity (min 10 pcs):</label>
+          <input id="qty" name="qty" type="number" min="<%= product.minQty %>" value="<%= product.minQty %>" class="field-control" />
+
+          <p class="unit-price">Unit price: $15.00</p>
+          <p class="total-line">Total: $150.00</p>
+
+          <button type="submit" class="btn-primary">Place order</button>
+        </form>
+
+        <section class="product-details">
+          <h2>Product details</h2>
+          <p><%= product.shortDesc %></p>
+        </section>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     &copy; 2025 CueCube Wholesale
   </footer>
+
+  <script src="/main.js"></script>
 </body>
 </html>

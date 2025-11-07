@@ -2,46 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Place order - <%= product.name %></title>
+  <title>Order form - CueCube Wholesale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">CueCube Wholesale</div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/products">Products</a>
-      <a href="/logout">Logout</a>
+    <nav class="nav">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/products" class="nav-link">Products</a>
+      <a href="/logout" class="nav-link">Logout</a>
     </nav>
   </header>
 
-  <main class="content narrow">
-    <h1>Order: <%= product.name %></h1>
-    <p>Quantity: <%= qty %></p>
-    <p>Diameter: <%= diameter %></p>
+  <main class="page-shell">
+    <section class="order-page">
+      <h1>Order: <%= product.name %></h1>
+      <p>Diameter: <strong><%= diameter.label %></strong></p>
+      <p>Quantity: <strong><%= qty %></strong></p>
+      <p>Unit price: $<%= unitPrice.toFixed(2) %></p>
+      <p>Total: $<%= total.toFixed(2) %></p>
 
-    <form method="post" action="/order" class="form">
-      <input type="hidden" name="productId" value="<%= product.id %>" />
-      <input type="hidden" name="qty" value="<%= qty %>" />
-      <input type="hidden" name="diameter" value="<%= diameter %>" />
+      <form method="POST" action="/order" class="order-form">
+        <input type="hidden" name="productId" value="<%= product.id %>" />
+        <input type="hidden" name="diameter" value="<%= diameter.code %>" />
+        <input type="hidden" name="qty" value="<%= qty %>" />
 
-      <label>
-        Your name
-        <input type="text" name="name" required />
-      </label>
+        <label>Name
+          <input type="text" name="name" required />
+        </label>
+        <label>Company
+          <input type="text" name="company" />
+        </label>
+        <label>Address
+          <input type="text" name="address" required />
+        </label>
+        <label>Phone
+          <input type="text" name="phone" required />
+        </label>
 
-      <label>
-        Address
-        <input type="text" name="address" required />
-      </label>
-
-      <label>
-        Phone
-        <input type="text" name="phone" required />
-      </label>
-
-      <button type="submit" class="btn">Submit order</button>
-    </form>
+        <button type="submit" class="btn-primary">Submit order</button>
+      </form>
+    </section>
   </main>
 
   <footer class="footer">

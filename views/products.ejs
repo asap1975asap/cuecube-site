@@ -1,21 +1,29 @@
-<% layout('layout') %>
-<h1 class="page-title">CueCube Product Catalog</h1>
-<p class="page-subtitle">Click a product card to view full details.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - CueCube Wholesale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">CueCube Wholesale</div>
+    <nav class="nav">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/login" class="nav-link">Login</a>
+    </nav>
+  </header>
 
-<div class="product-grid">
-    <% products.forEach(function(p){ %>
-        <div class="product-card">
-            <img src="<%= p.variants[0].images[0] %>" alt="<%= p.name %>" class="card-img" />
-            <h2 class="card-title"><%= p.name %></h2>
-            <p class="card-brand">by <%= p.brand %></p>
-            <p class="card-price">Price from $<%= (p.basePrice * 0.72).toFixed(2) %></p>
-            <p class="card-text"><%= p.shortText %></p>
-            <div class="thumb-strip">
-                <% p.variants[0].images.forEach(function(img){ %>
-                    <img src="<%= img %>" class="thumb-small" />
-                <% }) %>
-            </div>
-            <a href="/products/<%= p.id %>" class="btn btn-small">View</a>
-        </div>
-    <% }) %>
-</div>
+  <main class="page-shell">
+    <section class="auth">
+      <h1>Register</h1>
+      <p>This is only a stub page.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 CueCube Wholesale
+  </footer>
+</body>
+</html>
