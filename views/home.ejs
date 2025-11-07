@@ -1,40 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>CueCube Wholesale</title>
-  <link rel="stylesheet" href="/style.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">CueCube Wholesale</div>
-      <nav class="nav">
-        <a href="/">Home</a>
-        <% if (user) { %>
-          <a href="/products">Products</a>
-          <a href="/logout">Logout</a>
-        <% } else { %>
-          <a href="/login">Login</a>
-        <% } %>
-      </nav>
-    </div>
-  </header>
-
-  <main class="page-body">
-    <div class="hero-box">
-      <h1>Welcome to CueCube Wholesale</h1>
-      <p>Official wholesale platform for CueCube - the original cue tip shaper and scuffer made in the USA.</p>
-      <% if (user) { %>
-        <a href="/products" class="btn">View Products</a>
-      <% } else { %>
-        <a href="/login" class="btn">Login to View Products</a>
-      <% } %>
-    </div>
-  </main>
-
-  <footer class="footer">
-    &copy; 2025 CueCube Wholesale
-  </footer>
-</body>
-</html>
+<%- include('layout', {
+  user: user,
+  body: `
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Welcome to CueCube Wholesale</h1>
+        <p>Official wholesale platform for CueCube – the original cue tip shaper and scuffer made in the USA.</p>
+        <a class="btn-primary" href="${user ? '/products' : '/login'}">
+          ${user ? 'View Products' : 'Login to View Products'}
+        </a>
+      </div>
+    </section>
+  `
+}) %>

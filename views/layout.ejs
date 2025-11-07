@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <title>CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- important: css is here -->
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <div class="logo-text">CueCube Wholesale</div>
-      <nav class="topnav">
+      <div class="brand">
+        <a href="/">CueCube Wholesale</a>
+      </div>
+      <nav class="main-nav">
         <a href="/">Home</a>
+        <a href="/products">Products</a>
         <% if (user) { %>
-          <a href="/products">Products</a>
           <a href="/logout">Logout</a>
         <% } else { %>
           <a href="/login">Login</a>
@@ -22,12 +25,12 @@
     </div>
   </header>
 
-  <main class="page-body">
+  <main>
     <%- body %>
   </main>
 
-  <footer class="page-footer">
-    © 2025 CueCube Wholesale
+  <footer class="site-footer">
+    <p>© 2025 CueCube Wholesale</p>
   </footer>
 </body>
 </html>
