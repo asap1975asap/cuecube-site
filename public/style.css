@@ -1,298 +1,59 @@
-/* ---------- Global layout ---------- */
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background-color: #f5f8fc;
-  color: #222;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  background-color: #0c1324;
-  color: #fff;
-  padding: 14px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  letter-spacing: 0.5px;
-}
-
-nav a {
-  color: #fff;
-  text-decoration: none;
-  margin-left: 20px;
-  transition: color 0.2s;
-}
-
-nav a:hover {
-  color: #7cb9ff;
-}
-
-/* ---------- Footer ---------- */
-footer {
-  background-color: #e8edf3;
-  color: #333;
-  text-align: center;
-  padding: 20px 0;
-  font-size: 0.9rem;
-}
-
-/* ---------- Buttons ---------- */
-.btn {
-  background-color: #0074cc;
-  color: #fff;
-  text-decoration: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  display: inline-block;
-  transition: background-color 0.2s;
-}
-
-.btn:hover {
-  background-color: #005ea6;
-}
-
-/* ---------- Home Page ---------- */
-.home-container {
-  text-align: center;
-  margin-top: 100px;
-  padding: 40px;
-  background-color: #eef3fa;
+/* products page strict layout */
+.product-card {
+  width: 280px;
+  background: #fff;
   border-radius: 12px;
-  width: 80%;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.home-container h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-}
-
-.home-container p {
-  margin-bottom: 25px;
-  color: #444;
-  font-size: 1rem;
-}
-
-/* ---------- Login / Register ---------- */
-.login-container,
-.register-container {
-  background-color: #fff;
-  width: 400px;
-  margin: 100px auto;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.login-container h2,
-.register-container h2 {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-form {
+  padding: 18px 18px 20px 18px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-textarea {
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-button {
-  background-color: #0074cc;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-button:hover {
-  background-color: #005ea6;
-}
-
-.error {
-  color: #d33;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* ---------- Products Page ---------- */
-.products-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  padding: 40px;
-}
-
-.product-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  width: 270px;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-4px);
-}
-
-.product-card img {
+.product-card__img-wrap {
   width: 100%;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.product-card h3 {
-  margin: 10px 0 5px 0;
-  color: #005ea6;
-}
-
-.product-card p {
-  margin: 5px 0;
-  color: #555;
-}
-
-/* thumbnails below product */
-.thumbnail-container {
+  height: 170px;              /* фиксируем высоту картинки */
   display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.product-card__img-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.product-card__body {
+  text-align: center;
+  min-height: 140px;          /* чтобы текстовый блок был одинаковым */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-card__desc {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.product-card .thumbnail-container {
   justify-content: center;
   gap: 6px;
   margin-top: 8px;
 }
 
-.thumbnail-container img {
-  width: 55px;
-  height: 55px;
+.product-card .thumbnail-container img {
+  width: 38px;
+  height: 38px;
   object-fit: cover;
   border-radius: 6px;
-  border: 2px solid transparent;
-  cursor: pointer;
+  border: 1px solid #ddd;
 }
 
-.thumbnail-container img:hover,
-.thumbnail-container img.active {
-  border: 2px solid #0074cc;
-}
-
-/* ---------- Product Detail Page ---------- */
-.product-detail {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px;
-  gap: 40px;
-  background-color: #f6f9fd;
-}
-
-.product-detail img.main-image {
-  width: 380px;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-.product-detail .info {
-  max-width: 500px;
-}
-
-.product-detail h2 {
-  font-size: 1.8rem;
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.product-detail .price {
-  font-size: 1.2rem;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.quantity-input {
-  width: 100px;
-  padding: 8px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.order-btn {
-  margin-top: 20px;
-  display: inline-block;
-  background-color: #0074cc;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.order-btn:hover {
-  background-color: #005ea6;
-}
-
-/* ---------- Order Page ---------- */
-.order-container {
-  max-width: 500px;
-  margin: 60px auto;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-}
-
-.order-container h2 {
-  margin-bottom: 25px;
-  text-align: center;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  nav {
-    margin-top: 8px;
-  }
-
-  .home-container {
-    width: 90%;
-    margin-top: 70px;
-    padding: 20px;
-  }
-
-  .product-detail {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .product-detail img.main-image {
-    width: 90%;
-  }
+.product-card__btn {
+  margin-top: auto;           /* кнопка всегда внизу */
+  align-self: center;
 }
