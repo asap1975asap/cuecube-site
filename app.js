@@ -5,11 +5,15 @@ const path = require("path");
 
 const app = express();
 
+// view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// static
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// sessions
 app.use(
   session({
     secret: "cuecube_secret_key",
@@ -18,12 +22,15 @@ app.use(
   })
 );
 
+// demo user
 const users = [{ username: "demo@cuecube.com", password: "123Qwerty123" }];
 
+// base prices
 const PRICE_10 = 15.0;
 const PRICE_50 = +(PRICE_10 * 0.85).toFixed(2);
 const PRICE_100 = +(PRICE_50 * 0.85).toFixed(2);
 
+// descriptions
 const longDescriptionCube =
   "Product features:\n\n" +
   "The original Cue Cube is skillfully crafted in the USA using solid metal and silicon carbide for durability.\n" +
@@ -52,6 +59,7 @@ const longDescriptionKeychain =
   "Size: 1\" x 1\" x 0.6\" (2.6 x 2.6 x 1.5 cm)\n" +
   "Net weight: 1.6 oz. (46 gr)\n";
 
+// only two products
 function getProducts() {
   return [
     {
@@ -91,11 +99,13 @@ function getProducts() {
   ];
 }
 
+// middleware
 function requireLogin(req, res, next) {
   if (!req.session.user) return res.redirect("/login");
   next();
 }
 
+// routes
 app.get("/", function (req, res) {
   res.render("home", { user: req.session.user });
 });
@@ -194,6 +204,7 @@ app.post("/order", requireLogin, function (req, res) {
   );
 });
 
+// start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, function () {
   console.log("CueCube wholesale site running on port " + PORT);
