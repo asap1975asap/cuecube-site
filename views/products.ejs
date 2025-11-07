@@ -1,28 +1,26 @@
-<%- include('layout', { user: user, body: '' }) %>
-
-<div class="content-wrap">
-  <h2 class="page-title">CueCube Product Catalog</h2>
-  <p class="page-subtitle">Click a product name to view full details.</p>
-
-  <div class="products-grid">
-    <% products.forEach(function(product) { %>
-      <div class="product-card">
-        <img class="product-card-img" src="<%= product.images[0] %>" alt="<%= product.name %>">
-        <h3 class="product-card-title">
-          <a href="/products/<%= product.id %>"><%= product.name %></a>
-        </h3>
-        <p class="product-card-brand">by <%= product.brand %></p>
-        <p class="product-card-price">Price from $<%= product.price100.toFixed(2) %></p>
-        <p class="product-card-desc"><%= product.shortDesc %></p>
-
-        <div class="card-thumbs">
-          <% product.images.forEach(function(img) { %>
-            <img src="<%= img %>" alt="">
-          <% }) %>
+<%-
+  include('layout', {
+    body: `
+      <section class="products-page">
+        <h2>CueCube Product Catalog</h2>
+        <p>Click a product name to view full details.</p>
+        <div class="product-grid">
+          <% products.forEach(function(p){ %>
+            <article class="product-card">
+              <img src="<%= p.images[0] %>" alt="<%= p.name %>" class="product-thumb" />
+              <h3><a href="/products/<%= p.id %>"><%= p.name %></a></h3>
+              <p class="byline">by <%= p.brand %></p>
+              <p class="price-hint">Price from $<%= p.price100.toFixed(2) %></p>
+              <div class="thumb-row">
+                <% p.images.forEach(function(img){ %>
+                  <img src="<%= img %>" class="thumb-mini" />
+                <% }); %>
+              </div>
+              <a href="/products/<%= p.id %>" class="btn small">View</a>
+            </article>
+          <% }); %>
         </div>
-
-        <a class="btn" href="/products/<%= product.id %>">View</a>
-      </div>
-    <% }) %>
-  </div>
-</div>
+      </section>
+    `
+  })
+%>

@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="logo-text">CueCube Wholesale</div>
-      <nav class="topnav">
-        <a href="/">Home</a>
-        <% if (user) { %>
+  <head>
+    <meta charset="UTF-8" />
+    <title>CueCube Wholesale</title>
+    <link rel="stylesheet" href="/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">CueCube Wholesale</div>
+        <nav class="topnav">
+          <a href="/">Home</a>
           <a href="/products">Products</a>
           <a href="/logout">Logout</a>
-        <% } else { %>
-          <a href="/login">Login</a>
-        <% } %>
-      </nav>
-    </div>
-  </header>
+        </nav>
+      </div>
+    </header>
 
-  <main class="page-body">
-    <%- body %>
-  </main>
+    <!-- this is where page content must go -->
+    <main class="page-container">
+      <%- body %>
+    </main>
 
-  <footer class="page-footer">
-    © 2025 CueCube Wholesale
-  </footer>
-</body>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        © 2025 CueCube Wholesale
+      </div>
+    </footer>
+  </body>
 </html>
