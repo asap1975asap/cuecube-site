@@ -1,55 +1,53 @@
-<% layout('layout') %>
-<div class="product-detail-wrap">
-    <div class="product-gallery">
-        <img id="mainImage" src="<%= product.variants.find(v => v.code === selectedCode).images[0] %>" class="main-image" alt="<%= product.name %>" />
-        <div class="thumb-row">
-            <% product.variants.find(v => v.code === selectedCode).images.forEach(function(img, idx){ %>
-                <img src="<%= img %>" data-full="<%= img %>" class="thumb <% if(idx === 0){ %>active-thumb<% } %>" />
-            <% }) %>
-        </div>
+<%- include('layout', { body: `
+<section class="product-detail">
+  <div class="gallery">
+    <div class="gallery-main">
+      <img id="mainImage" src="${activeTip.images[0]}" alt="${product.name}" />
     </div>
-    <div class="product-info">
-        <h1><%= product.name %></h1>
-        <p class="byline">by <%= product.brand %></p>
-
-        <label class="inline-label">Tip profile:
-            <select id="diameterSelect">
-                <% product.variants.forEach(function(v){ %>
-                    <option value="<%= v.code %>"><%= v.label %></option>
-                <% }) %>
-            </select>
-        </label>
-
-        <h3>Wholesale pricing:</h3>
-        <ul class="price-list">
-            <li>10+ pcs: $<%= product.basePrice.toFixed(2) %> per unit</li>
-            <li>50+ pcs: $<%= (product.basePrice * 0.85).toFixed(2) %> per unit</li>
-            <li>100+ pcs: $<%= (product.basePrice * 0.72).toFixed(2) %> per unit</li>
-        </ul>
-
-        <label class="inline-label">Quantity (min 10 pcs):
-            <input id="qtyInput" type="number" min="10" value="10" />
-        </label>
-
-        <p id="unitPriceLine">Unit price: $<%= product.basePrice.toFixed(2) %></p>
-        <p id="totalPriceLine">Total: $<%= (product.basePrice * 10).toFixed(2) %></p>
-
-        <a id="orderButton" class="btn" href="/order?productId=<%= product.id %>&qty=10&diameter=<%= selectedCode %>">Place order</a>
+    <div class="gallery-thumbs" id="thumbContainer">
+      ${activeTip.images.map((img, idx) => `
+        <img src="${img}" data-src="${img}" class="thumb ${idx === 0 ? 'active' : ''}" alt="thumb ${idx+1}" />
+      `).join('')}
     </div>
-</div>
+  </div>
 
-<div class="product-details-text">
-    <h2>Product details</h2>
-    <h3>Product features:</h3>
-    <ul>
-        <% product.details.features.forEach(function(f){ %>
-            <li><%= f %></li>
-        <% }) %>
-    </ul>
-    <h3>Product specifications:</h3>
-    <ul>
-        <% product.details.specs.forEach(function(s){ %>
-            <li><%= s %></li>
-        <% }) %>
-    </ul>
-</div>
+  <div class="product-info">
+    <h1>${product.name}</h1>
+    <p class="product-brand">by ${product.brand}</p>
+
+    <label class="field">
+      Tip profile:
+      <select id="tipSelect" data-product-id="${product.id}">
+        ${product.tipProfiles.map(tp => `
+          <option value="${tp.code}" ${tp.code === activeTip.code ? 'selected' : ''}>${tp.label}</option>
+        `).join('')}
+      </select>
+    </label>
+
+    <div class="pricing">
+      <h3>Wholesale pricing:</h3>
+      <p>10+ pcs: <b>$${product.basePrice.toFixed(2)}</b> per unit</p>
+      <p>50+ pcs: <b>$${(product.basePrice * 0.85).toFixed(2)}</b> per unit</p>
+      <p>100+ pcs: <b>$${(product.basePrice * 0.85 * 0.85).toFixed(2)}</b> per unit</p>
+    </div>
+
+    <label class="field">
+      Quantity (min 10 pcs):
+      <input type="number" id="qtyInput" value="${qty}" min="10" step="1" />
+    </label>
+
+    <p class="price-line">Unit price: $<span id="unitPrice">${unitPrice.toFixed(2)}</span></p>
+    <p class="price-line">Total: $<span id="totalPrice">${totalPrice.toFixed(2)}</span></p>
+
+    <a id="placeOrderBtn" class="btn"
+       href="/order?productId=${product.id}&qty=${qty}&diameter=${activeTip.code}">
+       Place order
+    </a>
+
+    <div class="product-desc">
+      <h3>Product details</h3>
+      <pre class="pre-text">${product.descriptionLong}</pre>
+    </div>
+  </div>
+</section>
+` }) %>

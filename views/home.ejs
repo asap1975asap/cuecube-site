@@ -1,6 +1,9 @@
-<% layout('layout') %>
+<%- include('layout', { body: `
 <div class="hero">
-    <h1>Welcome to CueCube Wholesale</h1>
-    <p>Official wholesale platform for CueCube - the original cue tip shaper and scuffer made in the USA.</p>
-    <a class="btn" href="/products">View Products</a>
+  <h1>Welcome to CueCube Wholesale</h1>
+  <p>Official wholesale platform for CueCube - the original cue tip shaper and scuffer made in the USA.</p>
+  ${isAuthenticated
+    ? '<a class="btn" href="/products">View Products</a>'
+    : '<a class="btn" href="/login">Login to View Products</a>'}
 </div>
+` }) %>

@@ -1,68 +1,73 @@
-// handle gallery and price on product detail
-document.addEventListener("DOMContentLoaded", function () {
-  var mainImage = document.getElementById("mainImage");
-  var thumbs = document.querySelectorAll(".thumb");
-  thumbs.forEach(function (t) {
-    t.addEventListener("click", function () {
-      var src = t.getAttribute("data-full");
-      if (mainImage && src) {
-        mainImage.src = src;
-      }
-      thumbs.forEach(function (x) {
-        x.classList.remove("active-thumb");
-      });
-      t.classList.add("active-thumb");
-    });
-  });
-
-  var qtyInput = document.getElementById("qtyInput");
-  var unitLine = document.getElementById("unitPriceLine");
-  var totalLine = document.getElementById("totalPriceLine");
-  var orderBtn = document.getElementById("orderButton");
-  var diameterSelect = document.getElementById("diameterSelect");
-
-  function recalc() {
-    if (!qtyInput) return;
-    var qty = parseInt(qtyInput.value || "10", 10);
-    if (qty < 10) qty = 10;
-    qtyInput.value = qty;
-
-    // default base price 15
-    var base = 15.0;
-    var unit = base;
-    if (qty >= 100) {
-      unit = parseFloat((base * 0.72).toFixed(2));
-    } else if (qty >= 50) {
-      unit = parseFloat((base * 0.85).toFixed(2));
+// image preview change
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.gallery-thumbs .thumb')) {
+    const src = e.target.getAttribute('data-src');
+    const main = document.getElementById('mainImage');
+    if (main && src) {
+      main.src = src;
     }
-    var total = parseFloat((unit * qty).toFixed(2));
+    document.querySelectorAll('.gallery-thumbs .thumb').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+  }
+});
 
-    if (unitLine) unitLine.textContent = "Unit price: $" + unit.toFixed(2);
-    if (totalLine) totalLine.textContent = "Total: $" + total.toFixed(2);
+// tip profile change -> reload thumbs and update order link
+document.addEventListener('change', function (e) {
+  if (e.target.id === 'tipSelect') {
+    const productId = e.target.getAttribute('data-product-id');
+    const selected = e.target.value;
 
-    if (orderBtn) {
-      var productId = window.location.pathname.split("/").pop();
-      var diameter = diameterSelect ? diameterSelect.value : "";
-      orderBtn.href =
-        "/order?productId=" +
-        productId +
-        "&qty=" +
-        qty +
-        "&diameter=" +
-        encodeURIComponent(diameter);
+    fetch(`/products/${productId}?json=1&tip=${encodeURIComponent(selected)}`)
+      .then(r => r.json())
+      .then(data => {
+        const main = document.getElementById('mainImage');
+        const thumbs = document.getElementById('thumbContainer');
+        if (main && data.images && data.images.length) {
+          main.src = data.images[0];
+        }
+        if (thumbs) {
+          thumbs.innerHTML = '';
+          data.images.forEach((img, idx) => {
+            const im = document.createElement('img');
+            im.src = img;
+            im.dataset.src = img;
+            im.className = 'thumb' + (idx === 0 ? ' active' : '');
+            thumbs.appendChild(im);
+          });
+        }
+        const qtyInput = document.getElementById('qtyInput');
+        const qty = qtyInput ? parseInt(qtyInput.value, 10) : 10;
+        const placeBtn = document.getElementById('placeOrderBtn');
+        if (placeBtn) {
+          placeBtn.href = `/order?productId=${productId}&qty=${qty}&diameter=${encodeURIComponent(selected)}`;
+        }
+      })
+      .catch(() => {});
+  }
+});
+
+// qty change -> recalc total (we recalc on client, but real price is server-side)
+document.addEventListener('input', function (e) {
+  if (e.target.id === 'qtyInput') {
+    let qty = parseInt(e.target.value, 10);
+    if (isNaN(qty) || qty < 10) qty = 10;
+    e.target.value = qty;
+
+    const unitSpan = document.getElementById('unitPrice');
+    const totalSpan = document.getElementById('totalPrice');
+    const tipSelect = document.getElementById('tipSelect');
+    const placeBtn = document.getElementById('placeOrderBtn');
+
+    // we cannot perfectly recalc tier on client without knowing base price, so we simply update total if unit is shown
+    if (unitSpan && totalSpan) {
+      const unit = parseFloat(unitSpan.textContent);
+      const total = (unit * qty).toFixed(2);
+      totalSpan.textContent = total;
+    }
+
+    if (placeBtn && tipSelect) {
+      const productId = tipSelect.getAttribute('data-product-id');
+      placeBtn.href = `/order?productId=${productId}&qty=${qty}&diameter=${encodeURIComponent(tipSelect.value)}`;
     }
   }
-
-  if (qtyInput) {
-    qtyInput.addEventListener("input", recalc);
-  }
-  if (diameterSelect) {
-    diameterSelect.addEventListener("change", function () {
-      // when diameter changes we should also change thumbs shown
-      // but for now we just update order link
-      recalc();
-    });
-  }
-
-  recalc();
 });

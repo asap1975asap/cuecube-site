@@ -1,26 +1,30 @@
-<% layout('layout') %>
+<%- include('layout', { body: `
 <div class="form-wrap">
-    <h2>Place order</h2>
-    <p>Product: <strong><%= product.name %></strong></p>
-    <p>Diameter: <strong><%= diameter %></strong></p>
-    <p>Quantity: <strong><%= qty %></strong></p>
-    <p>Unit price: $<%= unitPrice.toFixed(2) %></p>
-    <p>Total: $<%= total.toFixed(2) %></p>
+  <h2>Place order</h2>
+  <p><b>Product:</b> ${product.name}</p>
+  <p><b>Tip profile:</b> ${diameter}</p>
+  <p><b>Quantity:</b> ${qty}</p>
+  <p><b>Total:</b> $${totalPrice.toFixed(2)}</p>
 
-    <form method="post" action="/order">
-        <input type="hidden" name="productId" value="<%= product.id %>" />
-        <input type="hidden" name="qty" value="<%= qty %>" />
-        <input type="hidden" name="diameter" value="<%= diameter %>" />
+  <form method="post" action="/order" class="form">
+    <input type="hidden" name="productId" value="${product.id}" />
+    <input type="hidden" name="qty" value="${qty}" />
+    <input type="hidden" name="diameter" value="${diameter}" />
 
-        <label>Your name
-            <input type="text" name="name" required />
-        </label>
-        <label>Address
-            <input type="text" name="address" required />
-        </label>
-        <label>Phone
-            <input type="text" name="phone" required />
-        </label>
-        <button type="submit" class="btn">Submit order</button>
-    </form>
+    <label>
+      Full name
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      Address
+      <input type="text" name="address" required />
+    </label>
+    <label>
+      Phone
+      <input type="text" name="phone" required />
+    </label>
+
+    <button type="submit" class="btn">Submit order</button>
+  </form>
 </div>
+` }) %>

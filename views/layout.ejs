@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>CueCube Wholesale</title>
-    <link rel="stylesheet" href="/style.css" />
+  <meta charset="UTF-8" />
+  <title><%= typeof title !== 'undefined' ? title + ' | CueCube Wholesale' : 'CueCube Wholesale' %></title>
+  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-    <header class="top-bar">
-        <div class="logo">CueCube Wholesale</div>
-        <nav class="top-nav">
-            <a href="/">Home</a>
-            <a href="/products">Products</a>
-            <a href="/login">Login</a>
-        </nav>
-    </header>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="logo">CueCube Wholesale</div>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <% if (isAuthenticated) { %>
+          <a href="/products">Products</a>
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
 
-    <main class="page-body">
-        <%- body %>
-    </main>
+  <main class="page">
+    <%- body %>
+  </main>
 
-    <footer class="site-footer">
-        (c) 2025 CueCube Wholesale
-    </footer>
+  <footer class="footer">
+    &copy; 2025 CueCube Wholesale
+  </footer>
 
-    <script src="/main.js"></script>
+  <script src="/main.js"></script>
 </body>
 </html>
