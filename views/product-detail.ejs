@@ -1,87 +1,55 @@
-<%- include('layout', { user: user, body: '' }) %>
-
-<div class="content-wrap">
-  <div class="product-detail">
-    <div class="product-detail-left">
-      <img src="<%= product.images[0] %>" alt="<%= product.name %>" class="main-image" id="mainProductImage">
-      <div class="thumbnail-container" id="thumbs">
-        <% product.images.forEach(function(img, index) { %>
-          <img src="<%= img %>" data-img="<%= img %>" class="<%= index === 0 ? 'active' : '' %>">
-        <% }) %>
-      </div>
-    </div>
-
-    <div class="product-detail-right">
-      <h2><%= product.name %></h2>
-      <p class="muted">by <%= product.brand %></p>
-
-      <% if (product.hasProfileChoice) { %>
-        <div class="form-row">
-          <label for="profileSelect"><strong>Tip profile:</strong></label>
-          <select id="profileSelect" class="input">
-            <option value=".418" selected>.418 in (Nickel)</option>
-            <option value=".353">.353 in (Dime)</option>
-          </select>
+<% layout('layout') %>
+<div class="product-detail-wrap">
+    <div class="product-gallery">
+        <img id="mainImage" src="<%= product.variants.find(v => v.code === selectedCode).images[0] %>" class="main-image" alt="<%= product.name %>" />
+        <div class="thumb-row">
+            <% product.variants.find(v => v.code === selectedCode).images.forEach(function(img, idx){ %>
+                <img src="<%= img %>" data-full="<%= img %>" class="thumb <% if(idx === 0){ %>active-thumb<% } %>" />
+            <% }) %>
         </div>
-      <% } %>
-
-      <h4>Wholesale pricing:</h4>
-      <p>10+ pcs: <strong>$<%= product.price10 %></strong> per unit</p>
-      <p>50+ pcs: <strong>$<%= product.price50 %></strong> per unit</p>
-      <p>100+ pcs: <strong>$<%= product.price100 %></strong> per unit</p>
-
-      <div class="form-row">
-        <label for="qtyInput"><strong>Quantity (min 10 pcs):</strong></label>
-        <input id="qtyInput" type="number" min="10" value="<%= defaultQty %>" class="input small">
-      </div>
-
-      <p id="unitPriceText">Unit price: $<%= unitPrice.toFixed(2) %></p>
-      <p id="totalPriceText">Total: $<%= total %></p>
-
-      <a class="btn primary" id="placeOrderBtn" href="/order?productId=<%= product.id %>&qty=<%= defaultQty %>">Place order</a>
     </div>
-  </div>
+    <div class="product-info">
+        <h1><%= product.name %></h1>
+        <p class="byline">by <%= product.brand %></p>
 
-  <div class="product-text">
-    <h3>Product details</h3>
-    <pre><%= product.longDesc %></pre>
-  </div>
+        <label class="inline-label">Tip profile:
+            <select id="diameterSelect">
+                <% product.variants.forEach(function(v){ %>
+                    <option value="<%= v.code %>"><%= v.label %></option>
+                <% }) %>
+            </select>
+        </label>
+
+        <h3>Wholesale pricing:</h3>
+        <ul class="price-list">
+            <li>10+ pcs: $<%= product.basePrice.toFixed(2) %> per unit</li>
+            <li>50+ pcs: $<%= (product.basePrice * 0.85).toFixed(2) %> per unit</li>
+            <li>100+ pcs: $<%= (product.basePrice * 0.72).toFixed(2) %> per unit</li>
+        </ul>
+
+        <label class="inline-label">Quantity (min 10 pcs):
+            <input id="qtyInput" type="number" min="10" value="10" />
+        </label>
+
+        <p id="unitPriceLine">Unit price: $<%= product.basePrice.toFixed(2) %></p>
+        <p id="totalPriceLine">Total: $<%= (product.basePrice * 10).toFixed(2) %></p>
+
+        <a id="orderButton" class="btn" href="/order?productId=<%= product.id %>&qty=10&diameter=<%= selectedCode %>">Place order</a>
+    </div>
 </div>
 
-<script src="/main.js"></script>
-<script>
-  window.cuecubeProduct = {
-    id: <%= product.id %>,
-    price10: <%= product.price10 %>,
-    price50: <%= product.price50 %>,
-    price100: <%= product.price100 %>
-  };
-
-  <% if (product.id === 0) { %>
-  window.cuecubeVariants = {
-    ".418": [
-      "/images/cue-cube-grey-418-1.jpg",
-      "/images/cue-cube-grey-418-2.jpg",
-      "/images/cue-cube-grey-418-3.jpg"
-    ],
-    ".353": [
-      "/images/cue-cube-grey-353-1.jpg",
-      "/images/cue-cube-grey-353-2.jpg",
-      "/images/cue-cube-grey-353-3.jpg"
-    ]
-  };
-  <% } else { %>
-  window.cuecubeVariants = {
-    ".418": [
-      "/images/cue-cube-keychain-418-1.jpg",
-      "/images/cue-cube-keychain-418-2.jpg",
-      "/images/cue-cube-keychain-418-3.jpg"
-    ],
-    ".353": [
-      "/images/cue-cube-keychain-353-1.jpg",
-      "/images/cue-cube-keychain-353-2.jpg",
-      "/images/cue-cube-keychain-353-3.jpg"
-    ]
-  };
-  <% } %>
-</script>
+<div class="product-details-text">
+    <h2>Product details</h2>
+    <h3>Product features:</h3>
+    <ul>
+        <% product.details.features.forEach(function(f){ %>
+            <li><%= f %></li>
+        <% }) %>
+    </ul>
+    <h3>Product specifications:</h3>
+    <ul>
+        <% product.details.specs.forEach(function(s){ %>
+            <li><%= s %></li>
+        <% }) %>
+    </ul>
+</div>

@@ -1,77 +1,68 @@
+// handle gallery and price on product detail
 document.addEventListener("DOMContentLoaded", function () {
-  var mainImg = document.getElementById("mainProductImage");
+  var mainImage = document.getElementById("mainImage");
+  var thumbs = document.querySelectorAll(".thumb");
+  thumbs.forEach(function (t) {
+    t.addEventListener("click", function () {
+      var src = t.getAttribute("data-full");
+      if (mainImage && src) {
+        mainImage.src = src;
+      }
+      thumbs.forEach(function (x) {
+        x.classList.remove("active-thumb");
+      });
+      t.classList.add("active-thumb");
+    });
+  });
+
   var qtyInput = document.getElementById("qtyInput");
-  var unitText = document.getElementById("unitPriceText");
-  var totalText = document.getElementById("totalPriceText");
-  var orderBtn = document.getElementById("placeOrderBtn");
-  var profileSelect = document.getElementById("profileSelect");
-  var thumbsContainer = document.getElementById("thumbs");
+  var unitLine = document.getElementById("unitPriceLine");
+  var totalLine = document.getElementById("totalPriceLine");
+  var orderBtn = document.getElementById("orderButton");
+  var diameterSelect = document.getElementById("diameterSelect");
 
-  function renderThumbnails(imgArray) {
-    if (!thumbsContainer || !mainImg) return;
-    thumbsContainer.innerHTML = "";
-    imgArray.forEach(function (src, index) {
-      var img = document.createElement("img");
-      img.src = src;
-      img.setAttribute("data-img", src);
-      if (index === 0) img.classList.add("active");
-      img.addEventListener("click", function () {
-        mainImg.src = src;
-        var all = thumbsContainer.querySelectorAll("img");
-        all.forEach(function (t) {
-          t.classList.remove("active");
-        });
-        img.classList.add("active");
-      });
-      thumbsContainer.appendChild(img);
-    });
-    mainImg.src = imgArray[0];
+  function recalc() {
+    if (!qtyInput) return;
+    var qty = parseInt(qtyInput.value || "10", 10);
+    if (qty < 10) qty = 10;
+    qtyInput.value = qty;
+
+    // default base price 15
+    var base = 15.0;
+    var unit = base;
+    if (qty >= 100) {
+      unit = parseFloat((base * 0.72).toFixed(2));
+    } else if (qty >= 50) {
+      unit = parseFloat((base * 0.85).toFixed(2));
+    }
+    var total = parseFloat((unit * qty).toFixed(2));
+
+    if (unitLine) unitLine.textContent = "Unit price: $" + unit.toFixed(2);
+    if (totalLine) totalLine.textContent = "Total: $" + total.toFixed(2);
+
+    if (orderBtn) {
+      var productId = window.location.pathname.split("/").pop();
+      var diameter = diameterSelect ? diameterSelect.value : "";
+      orderBtn.href =
+        "/order?productId=" +
+        productId +
+        "&qty=" +
+        qty +
+        "&diameter=" +
+        encodeURIComponent(diameter);
+    }
   }
 
-  if (thumbsContainer && mainImg) {
-    var thumbs = thumbsContainer.querySelectorAll("img");
-    thumbs.forEach(function (thumb) {
-      thumb.addEventListener("click", function () {
-        var src = this.getAttribute("data-img");
-        mainImg.src = src;
-        thumbs.forEach(function (t) {
-          t.classList.remove("active");
-        });
-        this.classList.add("active");
-      });
-    });
+  if (qtyInput) {
+    qtyInput.addEventListener("input", recalc);
   }
-
-  if (profileSelect && window.cuecubeVariants) {
-    profileSelect.addEventListener("change", function () {
-      var val = profileSelect.value;
-      var imgs = window.cuecubeVariants[val];
-      if (imgs && imgs.length) {
-        renderThumbnails(imgs);
-      }
+  if (diameterSelect) {
+    diameterSelect.addEventListener("change", function () {
+      // when diameter changes we should also change thumbs shown
+      // but for now we just update order link
+      recalc();
     });
   }
 
-  if (qtyInput && window.cuecubeProduct) {
-    qtyInput.addEventListener("input", function () {
-      var q = parseInt(qtyInput.value, 10);
-      if (isNaN(q) || q < 10) q = 10;
-      qtyInput.value = q;
-
-      var price = window.cuecubeProduct.price10;
-      if (q >= 100) price = window.cuecubeProduct.price100;
-      else if (q >= 50) price = window.cuecubeProduct.price50;
-
-      var total = (price * q).toFixed(2);
-      unitText.textContent = "Unit price: $" + price.toFixed(2);
-      totalText.textContent = "Total: $" + total;
-
-      if (orderBtn) {
-        orderBtn.setAttribute(
-          "href",
-          "/order?productId=" + window.cuecubeProduct.id + "&qty=" + q
-        );
-      }
-    });
-  }
+  recalc();
 });

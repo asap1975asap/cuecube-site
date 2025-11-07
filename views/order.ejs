@@ -1,31 +1,26 @@
-<%- include('layout', { user: user, body: '' }) %>
+<% layout('layout') %>
+<div class="form-wrap">
+    <h2>Place order</h2>
+    <p>Product: <strong><%= product.name %></strong></p>
+    <p>Diameter: <strong><%= diameter %></strong></p>
+    <p>Quantity: <strong><%= qty %></strong></p>
+    <p>Unit price: $<%= unitPrice.toFixed(2) %></p>
+    <p>Total: $<%= total.toFixed(2) %></p>
 
-<div class="order-container">
-  <h2>Place order</h2>
+    <form method="post" action="/order">
+        <input type="hidden" name="productId" value="<%= product.id %>" />
+        <input type="hidden" name="qty" value="<%= qty %>" />
+        <input type="hidden" name="diameter" value="<%= diameter %>" />
 
-  <% if (product) { %>
-    <p><strong>Product:</strong> <%= product.name %></p>
-    <p><strong>Quantity:</strong> <%= qty %> pcs</p>
-    <p><strong>Unit price:</strong> $<%= unitPrice.toFixed(2) %></p>
-    <p><strong>Total:</strong> $<%= total %></p>
-  <% } else { %>
-    <p>No product selected. You can still submit your contact info.</p>
-  <% } %>
-
-  <form method="post" action="/order" class="order-form">
-    <input type="hidden" name="productName" value="<%= product ? product.name : '' %>">
-    <input type="hidden" name="qty" value="<%= qty || 0 %>">
-    <input type="hidden" name="total" value="<%= total || 0 %>">
-
-    <label>Your name</label>
-    <input type="text" name="name" required>
-
-    <label>Phone</label>
-    <input type="text" name="phone" required>
-
-    <label>Shipping address</label>
-    <textarea name="address" rows="3" required></textarea>
-
-    <button type="submit">Submit order</button>
-  </form>
+        <label>Your name
+            <input type="text" name="name" required />
+        </label>
+        <label>Address
+            <input type="text" name="address" required />
+        </label>
+        <label>Phone
+            <input type="text" name="phone" required />
+        </label>
+        <button type="submit" class="btn">Submit order</button>
+    </form>
 </div>

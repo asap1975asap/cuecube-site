@@ -1,36 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- important: css is here -->
-  <link rel="stylesheet" href="/style.css" />
+    <meta charset="utf-8" />
+    <title>CueCube Wholesale</title>
+    <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand">
-        <a href="/">CueCube Wholesale</a>
-      </div>
-      <nav class="main-nav">
-        <a href="/">Home</a>
-        <a href="/products">Products</a>
-        <% if (user) { %>
-          <a href="/logout">Logout</a>
-        <% } else { %>
-          <a href="/login">Login</a>
-        <% } %>
-      </nav>
-    </div>
-  </header>
+    <header class="top-bar">
+        <div class="logo">CueCube Wholesale</div>
+        <nav class="top-nav">
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+            <a href="/login">Login</a>
+        </nav>
+    </header>
 
-  <main>
-    <%- body %>
-  </main>
+    <main class="page-body">
+        <%- body %>
+    </main>
 
-  <footer class="site-footer">
-    <p>© 2025 CueCube Wholesale</p>
-  </footer>
+    <footer class="site-footer">
+        (c) 2025 CueCube Wholesale
+    </footer>
+
+    <script src="/main.js"></script>
 </body>
 </html>

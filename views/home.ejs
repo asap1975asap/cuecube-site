@@ -1,14 +1,6 @@
-<%- include('layout', {
-  user: user,
-  body: `
-    <section class="hero">
-      <div class="hero-card">
-        <h1>Welcome to CueCube Wholesale</h1>
-        <p>Official wholesale platform for CueCube – the original cue tip shaper and scuffer made in the USA.</p>
-        <a class="btn-primary" href="${user ? '/products' : '/login'}">
-          ${user ? 'View Products' : 'Login to View Products'}
-        </a>
-      </div>
-    </section>
-  `
-}) %>
+<% layout('layout') %>
+<div class="hero">
+    <h1>Welcome to CueCube Wholesale</h1>
+    <p>Official wholesale platform for CueCube - the original cue tip shaper and scuffer made in the USA.</p>
+    <a class="btn" href="/products">View Products</a>
+</div>

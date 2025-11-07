@@ -1,30 +1,21 @@
-<%- include('layout', { user: user, body: `
-<div class="page-shell">
-  <h1 class="page-title">CueCube Product Catalog</h1>
-  <p class="page-subtitle">Click a product name to view full details.</p>
+<% layout('layout') %>
+<h1 class="page-title">CueCube Product Catalog</h1>
+<p class="page-subtitle">Click a product card to view full details.</p>
 
-  <div class="product-grid">
+<div class="product-grid">
     <% products.forEach(function(p){ %>
-      <div class="product-card">
-        <div class="product-main-img-wrap">
-          <img src="<%= p.images[0] %>" alt="<%= p.name %>" class="product-main-img">
+        <div class="product-card">
+            <img src="<%= p.variants[0].images[0] %>" alt="<%= p.name %>" class="card-img" />
+            <h2 class="card-title"><%= p.name %></h2>
+            <p class="card-brand">by <%= p.brand %></p>
+            <p class="card-price">Price from $<%= (p.basePrice * 0.72).toFixed(2) %></p>
+            <p class="card-text"><%= p.shortText %></p>
+            <div class="thumb-strip">
+                <% p.variants[0].images.forEach(function(img){ %>
+                    <img src="<%= img %>" class="thumb-small" />
+                <% }) %>
+            </div>
+            <a href="/products/<%= p.id %>" class="btn btn-small">View</a>
         </div>
-        <h2 class="product-name">
-          <a href="/products/<%= p.id %>"><%= p.name %></a>
-        </h2>
-        <p class="product-brand">by <%= p.brand %></p>
-        <p class="product-price-small">Price from $10.84</p>
-        <p class="product-short"><%= p.shortDescription %></p>
-
-        <div class="product-thumbs">
-          <% p.images.forEach(function(img, i){ %>
-            <img src="<%= img %>" class="product-thumb" alt="thumbnail <%= i+1 %>">
-          <% }) %>
-        </div>
-
-        <a class="btn btn-view" href="/products/<%= p.id %>">View</a>
-      </div>
     <% }) %>
-  </div>
 </div>
-` }) %>
