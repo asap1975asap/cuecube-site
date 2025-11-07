@@ -1,17 +1,43 @@
-<%- include('layout', { body: `
-<div class="form-wrap">
-  <h2>Dealer Login</h2>
-  ${error ? `<p class="error">${error}</p>` : ''}
-  <form method="post" action="/login" class="form">
-    <label>
-      Email
-      <input type="email" name="email" value="demo@cuecube.com" required />
-    </label>
-    <label>
-      Password
-      <input type="password" name="password" required />
-    </label>
-    <button type="submit" class="btn">Login</button>
-  </form>
-</div>
-` }) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dealer Login</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">CueCube Wholesale</div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/login">Login</a>
+    </nav>
+  </header>
+
+  <main class="content narrow">
+    <h1>Dealer Login</h1>
+
+    <% if (error) { %>
+      <p class="error"><%= error %></p>
+    <% } %>
+
+    <form method="post" action="/login" class="form">
+      <label>
+        Email
+        <input type="email" name="email" value="demo@cuecube.com" required />
+      </label>
+
+      <label>
+        Password
+        <input type="password" name="password" required />
+      </label>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+  </main>
+
+  <footer class="footer">
+    &copy; 2025 CueCube Wholesale
+  </footer>
+</body>
+</html>
