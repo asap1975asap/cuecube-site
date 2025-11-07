@@ -1,269 +1,251 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const session = require('express-session');
+// app.js
+const express = require("express");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
 
-// view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// ----- view + static -----
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
+// ----- session -----
 app.use(
   session({
-    secret: 'cuecube-demo-secret',
+    secret: "cuecube-secret",
     resave: false,
     saveUninitialized: false,
   })
 );
 
-// only two products
+// ----- fake user -----
+const DEMO_USER = {
+  email: "demo@cuecube.com",
+  password: "123Qwerty123",
+};
+
+// ----- products (2 items only) -----
 const products = [
   {
     id: 0,
-    name: 'CueCube - Grey',
-    brand: 'CueCube',
+    name: "CueCube - Grey",
+    brand: "CueCube",
+    description:
+      "Original cue tip shaper and scuffer made in the USA. Durable metal body with silicon carbide.",
     minQty: 10,
-    prices: [
-      { qty: 10, price: 15.0 },
-      { qty: 50, price: 12.75 },
-      { qty: 100, price: 10.84 },
-    ],
-    diameters: [
+    prices: {
+      base: 15.0,
+      fifty: 12.75,
+      hundred: 10.84,
+    },
+    variants: [
       {
-        code: '353',
-        label: '.353 in (Dime)',
+        code: ".418 in (Nickel)",
+        diameter: ".418",
         images: [
-          '/images/cue-cube-grey-353-1.jpg',
-          '/images/cue-cube-grey-353-2.jpg',
-          '/images/cue-cube-grey-353-3.jpg',
+          "/images/cue_cube_418_grey_1.jpg",
+          "/images/cue_cube_418_grey_2.jpg",
+          "/images/cue_cube_418_grey_3.jpg",
         ],
       },
       {
-        code: '418',
-        label: '.418 in (Nickel)',
+        code: ".353 in (Dime)",
+        diameter: ".353",
         images: [
-          '/images/cue-cube-grey-418-1.jpg',
-          '/images/cue-cube-grey-418-2.jpg',
-          '/images/cue-cube-grey-418-3.jpg',
+          "/images/cue_cube_353_grey_1.jpg",
+          "/images/cue_cube_353_grey_2.jpg",
+          "/images/cue_cube_353_grey_3.jpg",
         ],
       },
     ],
-    shortDesc: 'Original cue tip shaper and scuffer.',
   },
   {
     id: 1,
-    name: 'CueCube Keychain - Grey',
-    brand: 'CueCube',
+    name: "CueCube Keychain - Grey",
+    brand: "CueCube",
+    description:
+      "Keychain version of the original CueCube tip tool. Same shaping and scuffing surface.",
     minQty: 10,
-    prices: [
-      { qty: 10, price: 15.0 },
-      { qty: 50, price: 12.75 },
-      { qty: 100, price: 10.84 },
-    ],
-    diameters: [
+    prices: {
+      base: 15.0,
+      fifty: 12.75,
+      hundred: 10.84,
+    },
+    variants: [
       {
-        code: '353',
-        label: '.353 in (Dime)',
+        code: ".418 in (Nickel)",
+        diameter: ".418",
         images: [
-          // пока фото для .353 нет, используем то, что есть
-          '/images/cue-cube-keychain-1.jpg',
-          '/images/cue-cube-keychain-2.jpg',
-          '/images/cue-cube-keychain-3.jpg',
+          "/images/cue_cube_418_keychain_grey_1.jpg",
+          "/images/cue_cube_418_keychain_grey_2.jpg",
+          "/images/cue_cube_418_keychain_grey_3.jpg",
         ],
       },
       {
-        code: '418',
-        label: '.418 in (Nickel)',
+        code: ".353 in (Dime)",
+        diameter: ".353",
+        // пока фото те же, что и для .418
         images: [
-          '/images/cue-cube-keychain-418-1.jpg',
-          '/images/cue-cube-keychain-418-2.jpg',
-          '/images/cue-cube-keychain-418-3.jpg',
+          "/images/cue_cube_418_keychain_grey_1.jpg",
+          "/images/cue_cube_418_keychain_grey_2.jpg",
+          "/images/cue_cube_418_keychain_grey_3.jpg",
         ],
       },
     ],
-    shortDesc: 'CueCube with keychain ring.',
   },
 ];
 
-// price helper
-function getUnitPrice(product, qty) {
-  let price = product.prices[0].price;
-  product.prices.forEach(function (p) {
-    if (qty >= p.qty) {
-      price = p.price;
-    }
-  });
-  return price;
+// ----- helper -----
+function requireAuth(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  }
+  return res.redirect("/login");
 }
 
+function calcTotal(priceMap, qty) {
+  const q = Number(qty) || 0;
+  if (q >= 100) return (priceMap.hundred * q).toFixed(2);
+  if (q >= 50) return (priceMap.fifty * q).toFixed(2);
+  return (priceMap.base * q).toFixed(2);
+}
+
+// ===== ROUTES =====
+
 // home
-app.get('/', function (req, res) {
-  res.render('home', { isAuthenticated: !!req.session.user });
+app.get("/", (req, res) => {
+  res.render("home", { user: req.session.user || null });
 });
 
-// login form
-app.get('/login', function (req, res) {
-  res.render('login', { error: null });
+// login page
+app.get("/login", (req, res) => {
+  res.render("login", {
+    error: null,
+    email: "",
+  });
 });
 
 // login submit
-app.post('/login', function (req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
-
-  // demo creds
-  if (email === 'demo@cuecube.com' && password === '123Qwerty123') {
-    req.session.user = { email: email };
-    return res.redirect('/products');
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (
+    email &&
+    password &&
+    email.toLowerCase() === DEMO_USER.email.toLowerCase() &&
+    password === DEMO_USER.password
+  ) {
+    req.session.user = { email: DEMO_USER.email };
+    return res.redirect("/products");
   }
 
-  return res.render('login', {
-    error: 'Invalid email or password',
+  return res.render("login", {
+    error: "Invalid email or password",
+    email: email || "",
   });
 });
 
 // logout
-app.get('/logout', function (req, res) {
-  req.session.destroy(function () {
-    res.redirect('/');
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
   });
 });
 
 // products list (protected)
-app.get('/products', function (req, res) {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  res.render('products', {
-    isAuthenticated: true,
-    products: products,
+app.get("/products", requireAuth, (req, res) => {
+  res.render("products", {
+    user: req.session.user,
+    products,
   });
 });
 
-// single product
-app.get('/products/:id', function (req, res) {
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  const productId = parseInt(req.params.id, 10);
-  const product = products.find(function (p) {
-    return p.id === productId;
-  });
-
+// product detail (protected)
+app.get("/products/:id", requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const product = products.find((p) => p.id === id);
   if (!product) {
-    return res.status(404).send('Product not found');
+    return res.status(404).send("Product not found");
   }
 
-  const currentDiameter = product.diameters[0];
+  const variantIndex = parseInt(req.query.variant || "0", 10);
+  const safeVariantIndex =
+    variantIndex >= 0 && variantIndex < product.variants.length
+      ? variantIndex
+      : 0;
 
-  res.render('product-detail', {
-    isAuthenticated: true,
-    product: product,
-    currentDiameter: currentDiameter,
-    qty: product.minQty,
+  res.render("product-detail", {
+    user: req.session.user,
+    product,
+    activeVariantIndex: safeVariantIndex,
   });
 });
 
-// order (GET) - show form
-app.get('/order', function (req, res) {
+// order page (protected)
+app.get("/order", requireAuth, (req, res) => {
   const productId = parseInt(req.query.productId, 10);
-  const diameterCode = req.query.diameter;
-  const qty = parseInt(req.query.qty, 10);
+  const qty = parseInt(req.query.qty, 10) || 0;
+  const diameter = req.query.diameter || "";
+  const product = products.find((p) => p.id === productId);
 
-  const product = products.find(function (p) {
-    return p.id === productId;
-  });
   if (!product) {
-    return res.status(404).send('Product not found');
+    return res.status(404).send("Product not found");
   }
 
-  const diameter = product.diameters.find(function (d) {
-    return d.code === diameterCode;
-  });
-  if (!diameter) {
-    return res.status(400).send('Diameter not found');
-  }
+  const total = calcTotal(product.prices, qty);
 
-  const unitPrice = getUnitPrice(product, qty);
-  const total = unitPrice * qty;
-
-  res.render('order', {
-    isAuthenticated: true,
-    product: product,
-    qty: qty,
-    diameter: diameter,
-    unitPrice: unitPrice,
-    total: total,
+  res.render("order", {
+    user: req.session.user,
+    product,
+    qty,
+    diameter,
+    total,
   });
 });
 
-// order (POST) - fake submit
-app.post('/order', function (req, res) {
-  const productId = parseInt(req.body.productId, 10);
-  const diameterCode = req.body.diameter;
-  const qty = parseInt(req.body.qty, 10);
+// order submit (protected)
+app.post("/order", requireAuth, (req, res) => {
+  const { productId, qty, name, address, phone, diameter } = req.body;
+  const product = products.find((p) => p.id === parseInt(productId, 10));
 
-  const product = products.find(function (p) {
-    return p.id === productId;
-  });
   if (!product) {
-    return res.status(404).send('Product not found');
+    return res.status(400).send("Product not found");
   }
 
-  const diameter = product.diameters.find(function (d) {
-    return d.code === diameterCode;
-  });
-  if (!diameter) {
-    return res.status(400).send('Diameter not found');
-  }
+  const pickedDiameter = diameter || product.variants[0].diameter;
+  const total = calcTotal(product.prices, qty);
 
-  const unitPrice = getUnitPrice(product, qty);
-  const total = unitPrice * qty;
-
-  const name = req.body.name;
-  const company = req.body.company;
-  const address = req.body.address;
-  const phone = req.body.phone;
-
+  // simple thanks html
   res.send(
-    '<h1>Order received</h1>' +
-      '<p>Thank you, ' +
+    "<h1>Order received</h1>" +
+      "<p>Thank you, " +
       name +
-      '.</p>' +
-      '<p>Product: ' +
+      ".</p>" +
+      "<p>Product: <b>" +
       product.name +
-      '</p>' +
-      '<p>Diameter: ' +
-      diameter.label +
-      '</p>' +
-      '<p>Quantity: ' +
+      "</b></p>" +
+      "<p>Diameter: " +
+      pickedDiameter +
+      "</p>" +
+      "<p>Quantity: " +
       qty +
-      '</p>' +
-      '<p>Total: $' +
-      total.toFixed(2) +
-      '</p>' +
-      '<p>We will contact you at ' +
-      phone +
-      '.</p>' +
+      "</p>" +
+      "<p>Total: $" +
+      total +
+      "</p>" +
       '<p><a href="/">Return to home</a></p>'
   );
 });
 
-// register (stub)
-app.get('/register', function (req, res) {
-  res.render('register');
+// register stub
+app.get("/register", (req, res) => {
+  res.render("register");
 });
 
-// start server
+// ===== START =====
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, function () {
-  console.log('CueCube wholesale site running on port ' + PORT);
+app.listen(PORT, () => {
+  console.log("CueCube wholesale site running on port " + PORT);
 });
