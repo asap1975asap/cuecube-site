@@ -6,12 +6,12 @@
 <div class="products-container">
   <% products.forEach(function(product) { %>
     <div class="product-card">
-      <!-- image block -->
+      <!-- Product image block -->
       <div class="product-card__img-wrap">
         <img src="<%= product.images[0] %>" alt="<%= product.name %>">
       </div>
 
-      <!-- text block -->
+      <!-- Product text block -->
       <div class="product-card__body">
         <h3>
           <a href="/products/<%= product.id %>" style="color:#005ea6; text-decoration:none;">
@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <!-- button -->
+      <!-- View button -->
       <a class="btn product-card__btn" href="/products/<%= product.id %>">View</a>
     </div>
   <% }) %>
