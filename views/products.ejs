@@ -1,34 +1,30 @@
-<%- include('layout', { user: user, body: '' }) %>
+<%- include('layout', { user: user, body: `
+<div class="page-shell">
+  <h1 class="page-title">CueCube Product Catalog</h1>
+  <p class="page-subtitle">Click a product name to view full details.</p>
 
-<div class="page-container">
-  <div class="products-header">
-    <h1>CueCube Product Catalog</h1>
-    <p>Click a product name to view full details.</p>
-  </div>
-
-  <div class="products-grid">
-    <% products.forEach(function(p, idx) { %>
+  <div class="product-grid">
+    <% products.forEach(function(p){ %>
       <div class="product-card">
-        <div class="product-card-image">
-          <img src="<%= p.images && p.images.length ? p.images[0] : '/images/placeholder.png' %>" alt="<%= p.name %>">
+        <div class="product-main-img-wrap">
+          <img src="<%= p.images[0] %>" alt="<%= p.name %>" class="product-main-img">
         </div>
-        <div class="product-card-body">
-          <h2><%= p.name %></h2>
-          <p class="byline">by CueCube</p>
-          <p class="price-line">Price from $<%= p.price100.toFixed(2) %></p>
-          <% if (p.shortDescription) { %>
-            <p class="short-desc"><%= p.shortDescription %></p>
-          <% } %>
-          <% if (p.images && p.images.length) { %>
-            <div class="thumb-row">
-              <% p.images.forEach(function(img, i) { %>
-                <img src="<%= img %>" alt="thumb" class="thumb">
-              <% }) %>
-            </div>
-          <% } %>
-          <a class="btn" href="/products/<%= idx %>">View</a>
+        <h2 class="product-name">
+          <a href="/products/<%= p.id %>"><%= p.name %></a>
+        </h2>
+        <p class="product-brand">by <%= p.brand %></p>
+        <p class="product-price-small">Price from $10.84</p>
+        <p class="product-short"><%= p.shortDescription %></p>
+
+        <div class="product-thumbs">
+          <% p.images.forEach(function(img, i){ %>
+            <img src="<%= img %>" class="product-thumb" alt="thumbnail <%= i+1 %>">
+          <% }) %>
         </div>
+
+        <a class="btn btn-view" href="/products/<%= p.id %>">View</a>
       </div>
     <% }) %>
   </div>
 </div>
+` }) %>
