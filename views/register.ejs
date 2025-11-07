@@ -1,6 +1,27 @@
-<%- include('layout', { body: `
-<div class="form-wrap">
-  <h2>Register (stub)</h2>
-  <p>This page is not implemented yet.</p>
-</div>
-` }) %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= title || 'CueCube Wholesale' %></title>
+  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">CueCube Wholesale</div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/products">Products</a>
+      <a href="/login">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <%- body %>
+  </main>
+
+  <footer class="site-footer">
+    &copy; 2025 CueCube Wholesale
+  </footer>
+</body>
+</html>

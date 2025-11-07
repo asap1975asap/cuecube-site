@@ -1,49 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dealer Login - CueCube Wholesale</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="/style.css" />
-</head>
-<body>
-  <header class="topbar">
-    <div class="brand">CueCube Wholesale</div>
-    <nav class="nav">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/products" class="nav-link">Products</a>
-      <a href="/login" class="nav-link active">Login</a>
-    </nav>
-  </header>
-
-  <main class="page-shell">
-    <section class="auth">
-      <h1 class="auth-title">Dealer Login</h1>
-
-      <% if (error) { %>
-        <div class="alert"><%= error %></div>
-      <% } %>
-
-      <form method="POST" action="/login" class="auth-form">
-        <label class="field">
-          <span class="field-label">Email</span>
-          <input type="email" name="email" value="demo@cuecube.com" required class="field-control" />
-        </label>
-
-        <label class="field">
-          <span class="field-label">Password</span>
-          <input type="password" name="password" required class="field-control" />
-        </label>
-
-        <button type="submit" class="btn-primary">Login</button>
-      </form>
-
-      <p class="hint">Use demo@cuecube.com / 123Qwerty123</p>
-    </section>
-  </main>
-
-  <footer class="footer">
-    &copy; 2025 CueCube Wholesale
-  </footer>
-</body>
-</html>
+<%- include('layout', { title: title, body: '' }) %>
+<div class="hero small">
+  <h1>Dealer Login</h1>
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+  <form method="post" action="/login" class="login-form">
+    <label>Email
+      <input type="email" name="email" value="demo@cuecube.com" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit" class="btn">Login</button>
+  </form>
+</div>
