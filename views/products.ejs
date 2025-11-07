@@ -13,8 +13,8 @@
       <p style="font-size: 0.85rem; color:#777;"><%= product.shortDesc %></p>
 
       <div class="thumbnail-container">
-        <% product.images.forEach(function(img, index) { %>
-          <img src="<%= img %>" alt="" style="cursor:default;">
+        <% product.images.forEach(function(img) { %>
+          <img src="<%= img %>" alt="">
         <% }) %>
       </div>
 

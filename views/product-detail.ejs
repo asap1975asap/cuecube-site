@@ -14,8 +14,7 @@
     <h2><%= product.name %></h2>
     <p>by <%= product.brand %></p>
 
-    <% /* Show profile selector only for the first CueCube product */ %>
-    <% if (product.id === 0) { %>
+    <% if (product.hasProfileChoice) { %>
       <div style="margin: 18px 0;">
         <label for="profileSelect"><strong>Tip profile:</strong></label>
         <select id="profileSelect" class="quantity-input" style="width:auto; margin-left:10px;">
@@ -47,7 +46,6 @@
 
 <script src="/main.js"></script>
 <script>
-  // Basic product data used for price calculation
   window.cuecubeProduct = {
     id: <%= product.id %>,
     price10: <%= product.price10 %>,
@@ -55,7 +53,6 @@
     price100: <%= product.price100 %>
   };
 
-  // Image sets for CueCube Grey variants (.418 and .353)
   <% if (product.id === 0) { %>
   window.cuecubeVariants = {
     ".418": [
@@ -67,6 +64,19 @@
       "/images/cue-cube-grey-353-1.jpg",
       "/images/cue-cube-grey-353-2.jpg",
       "/images/cue-cube-grey-353-3.jpg"
+    ]
+  };
+  <% } else if (product.id === 1) { %>
+  window.cuecubeVariants = {
+    ".418": [
+      "/images/cue-cube-keychain-418-1.jpg",
+      "/images/cue-cube-keychain-418-2.jpg",
+      "/images/cue-cube-keychain-418-3.jpg"
+    ],
+    ".353": [
+      "/images/cue-cube-keychain-353-1.jpg",
+      "/images/cue-cube-keychain-353-2.jpg",
+      "/images/cue-cube-keychain-353-3.jpg"
     ]
   };
   <% } %>

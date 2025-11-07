@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var thumbs = document.querySelectorAll("#thumbs img");
   var mainImg = document.getElementById("mainProductImage");
   var qtyInput = document.getElementById("qtyInput");
   var unitText = document.getElementById("unitPriceText");
   var totalText = document.getElementById("totalPriceText");
   var orderBtn = document.getElementById("placeOrderBtn");
   var profileSelect = document.getElementById("profileSelect");
+  var thumbsContainer = document.getElementById("thumbs");
 
-  // Helper: rebuild the thumbnails when switching variant
   function renderThumbnails(imgArray) {
-    var thumbsContainer = document.getElementById("thumbs");
+    if (!thumbsContainer || !mainImg) return;
     thumbsContainer.innerHTML = "";
     imgArray.forEach(function (src, index) {
       var img = document.createElement("img");
@@ -29,12 +28,12 @@ document.addEventListener("DOMContentLoaded", function () {
     mainImg.src = imgArray[0];
   }
 
-  // Thumbnail click for static images (non-variant products)
-  if (thumbs && mainImg) {
+  if (thumbsContainer && mainImg) {
+    var thumbs = thumbsContainer.querySelectorAll("img");
     thumbs.forEach(function (thumb) {
       thumb.addEventListener("click", function () {
         var src = this.getAttribute("data-img");
-        mainImg.setAttribute("src", src);
+        mainImg.src = src;
         thumbs.forEach(function (t) {
           t.classList.remove("active");
         });
@@ -43,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Handle variant change for CueCube Grey (.353 / .418)
   if (profileSelect && window.cuecubeVariants) {
     profileSelect.addEventListener("change", function () {
       var val = profileSelect.value;
@@ -54,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Quantity and price calculation
   if (qtyInput && window.cuecubeProduct) {
     qtyInput.addEventListener("input", function () {
       var q = parseInt(qtyInput.value, 10);
@@ -66,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
       else if (q >= 50) price = window.cuecubeProduct.price50;
 
       var total = (price * q).toFixed(2);
-
       unitText.textContent = "Unit price: $" + price.toFixed(2);
       totalText.textContent = "Total: $" + total;
 
